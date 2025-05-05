@@ -1,75 +1,95 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
-
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import { FontAwesome5, Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Card } from 'react-native-paper';
 
 export default function HomeScreen() {
+  const navigation = useNavigation();
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+    <ScrollView contentContainerStyle={styles.container}>
+      <Text style={styles.title}>Resumo Diário</Text>
+      <Text style={styles.text}>- Medicamentos tomados: 3/5</Text>
+      <Text style={styles.text}>- Sintomas relatados: Nenhum</Text>
+      <View style={styles.cardsRow}>
+        <Card style={styles.card} onPress={() => navigation.navigate('Prescriptions')}>
+          <Card.Content style={styles.cardContent}>
+            <FontAwesome5 name="pills" size={36} color="#2bb3c0" />
+            <Text style={styles.cardTitle}>Medicines</Text>
+          </Card.Content>
+        </Card>
+        <Card style={styles.card} onPress={() => navigation.navigate('Symptoms')}>
+          <Card.Content style={styles.cardContent}>
+            <MaterialIcons name="sick" size={36} color="#4ecb71" />
+            <Text style={styles.cardTitle}>Symptoms</Text>
+          </Card.Content>
+        </Card>
+      </View>
+      <View style={styles.cardsRow}>
+        <Card style={styles.card} onPress={() => navigation.navigate('Reports')}>
+          <Card.Content style={styles.cardContent}>
+            <Ionicons name="document-text-outline" size={36} color="#2bb3c0" />
+            <Text style={styles.cardTitle}>Reports</Text>
+          </Card.Content>
+        </Card>
+        <Card style={styles.card} onPress={() => navigation.navigate('Settings')}>
+          <Card.Content style={styles.cardContent}>
+            <Ionicons name="settings-outline" size={36} color="#4ecb71" />
+            <Text style={styles.cardTitle}>Settings</Text>
+          </Card.Content>
+        </Card>
+      </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
+  container: {
+    flexGrow: 1,
     alignItems: 'center',
-    gap: 8,
+    backgroundColor: '#f8fcff',
+    paddingVertical: 32,
   },
-  stepContainer: {
-    gap: 8,
+  title: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#222',
+    alignSelf: 'flex-start',
+    marginLeft: 24,
+    marginBottom: 16,
+    fontFamily: 'Montserrat-Bold',
+  },
+  text: {
+    fontSize: 18,
+    color: '#444',
+    alignSelf: 'flex-start',
+    marginLeft: 24,
     marginBottom: 8,
+    fontFamily: 'Montserrat-Regular',
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  cardsRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 24,
+  },
+  card: {
+    flex: 1,
+    marginHorizontal: 12,
+    borderRadius: 18,
+    elevation: 2,
+    backgroundColor: '#fff',
+    minWidth: 140,
+    maxWidth: 180,
+  },
+  cardContent: {
+    alignItems: 'center',
+    paddingVertical: 20,
+  },
+  cardTitle: {
+    fontSize: 18,
+    marginTop: 12,
+    color: '#222',
+    fontWeight: 'bold',
+    fontFamily: 'Montserrat-Bold',
   },
 });
