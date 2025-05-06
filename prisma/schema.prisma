@@ -1,0 +1,67 @@
+// Prisma schema para o app Serena
+// Banco: SQLite para facilitar testes locais (pode trocar para PostgreSQL depois)
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String    @id @default(uuid())
+  name         String
+  email        String    @unique
+  passwordHash String
+  role         UserRole
+  patients     Senior[]  @relation("Caregivers")
+  seniorsAsDoctor Senior[] @relation("Doctors")
+  createdAt    DateTime  @default(now())
+}
+
+model Senior {
+  id            String         @id @default(uuid())
+  name          String
+  birthDate     DateTime
+  identifier    String         @unique
+  caregivers    User[]         @relation("Caregivers")
+  doctors       User[]         @relation("Doctors")
+  symptoms      Symptom[]
+  prescriptions Prescription[]
+  createdAt     DateTime       @default(now())
+}
+
+model Symptom {
+  id          String   @id @default(uuid())
+  senior      Senior   @relation(fields: [seniorId], references: [id])
+  seniorId    String
+  description String
+  painLevel   Int
+  createdAt   DateTime @default(now())
+}
+
+model Prescription {
+  id          String     @id @default(uuid())
+  senior      Senior     @relation(fields: [seniorId], references: [id])
+  seniorId    String
+  medication  Medication @relation(fields: [medicationId], references: [id])
+  medicationId String
+  dosage      String
+  frequency   String
+  startDate   DateTime
+  endDate     DateTime
+  createdAt   DateTime   @default(now())
+}
+
+model Medication {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  prescriptions Prescription[]
+}
+
+enum UserRole {
+  caregiver
+  doctor
+}
