@@ -1,10 +1,25 @@
-import { Link, Stack } from 'expo-router';
+import { Link, Stack, useRouter } from 'expo-router';
+import { useEffect } from 'react';
 import { StyleSheet } from 'react-native';
+import { useAuth } from '../context/AuthContext';
 
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 
 export default function NotFoundScreen() {
+  const { user, loading } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!loading && user) {
+      router.replace('/(tabs)');
+    }
+  }, [user, loading]);
+
+  if (loading) {
+    return null;
+  }
+
   return (
     <>
       <Stack.Screen options={{ title: 'Oops!' }} />

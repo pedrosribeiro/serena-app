@@ -1,5 +1,6 @@
-import { Redirect } from 'expo-router';
+import React from 'react';
+import AuthGate from '../screens/AuthGate';
 
-export default function HomeRedirect() {
-  return <Redirect href="/" />;
+export default function HomeScreen() {
+  return <AuthGate />;
 }

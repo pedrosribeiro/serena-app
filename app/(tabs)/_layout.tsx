@@ -1,6 +1,7 @@
 import { FontAwesome5, Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useTheme } from 'react-native-paper';
+import { useAuth } from '../../context/AuthContext';
 import HomeScreen from './index';
 import PrescriptionsScreen from './prescriptions';
 import ReportsScreen from './reports';
@@ -17,6 +18,22 @@ const Tab = createBottomTabNavigator();
 
 export default function TabLayout() {
   const theme = useTheme();
+  const { user } = useAuth();
+
+  // Definição dinâmica das abas
+  const caregiverTabs = [
+    { name: 'Home', component: HomeScreen, title: 'Home' },
+    { name: 'Prescriptions', component: PrescriptionsScreen, title: 'Prescriptions' },
+    { name: 'Symptoms', component: SymptomsScreen, title: 'Symptoms' },
+    { name: 'Reports', component: ReportsScreen, title: 'Reports' },
+    { name: 'Settings', component: SettingsScreen, title: 'Settings' },
+  ];
+  const doctorTabs = [
+    { name: 'Reports', component: ReportsScreen, title: 'Reports' },
+    { name: 'Settings', component: SettingsScreen, title: 'Settings' },
+  ];
+  const tabs = user?.role === 'doctor' ? doctorTabs : caregiverTabs;
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -51,11 +68,9 @@ export default function TabLayout() {
         },
       })}
     >
-      <Tab.Screen name="Home" component={HomeScreen} options={{ title: 'Home' }} />
-      <Tab.Screen name="Prescriptions" component={PrescriptionsScreen} options={{ title: 'Prescriptions' }} />
-      <Tab.Screen name="Symptoms" component={SymptomsScreen} options={{ title: 'Symptoms' }} />
-      <Tab.Screen name="Reports" component={ReportsScreen} options={{ title: 'Reports' }} />
-      <Tab.Screen name="Settings" component={SettingsScreen} options={{ title: 'Settings' }} />
+      {tabs.map(tab => (
+        <Tab.Screen key={tab.name} name={tab.name} component={tab.component} options={{ title: tab.title }} />
+      ))}
     </Tab.Navigator>
   );
 }

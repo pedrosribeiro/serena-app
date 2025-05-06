@@ -5,7 +5,7 @@ export default function WelcomeScreen() {
   const navigation = useNavigation();
 
   const handleStart = () => {
-    navigation.navigate('Main');
+    navigation.navigate('Home');
   };
 
   return (

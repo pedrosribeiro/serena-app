@@ -4,7 +4,10 @@ import * as Notifications from 'expo-notifications';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect } from 'react';
+import { Text, View } from 'react-native';
 import 'react-native-reanimated';
+import { AuthProvider, useAuth } from '../context/AuthContext';
+import AuthGate from '../screens/AuthGate';
 
 export default function RootLayout() {
   const [loaded] = useFonts({
@@ -31,9 +34,21 @@ export default function RootLayout() {
   }
 
   return (
-    <>
-      <Stack screenOptions={{ headerShown: false }} />
+    <AuthProvider>
+      <AuthContent />
       <StatusBar style="auto" />
-    </>
+    </AuthProvider>
   );
+}
+
+function AuthContent() {
+  const { user, loading } = useAuth();
+  if (loading) {
+    // Show a loading indicator while checking auth state
+    return <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}><Text>Loading...</Text></View>;
+  }
+  if (!user) {
+    return <AuthGate />;
+  }
+  return <Stack screenOptions={{ headerShown: false }} />;
 }
