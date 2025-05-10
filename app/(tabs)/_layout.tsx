@@ -3,6 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Text, View, useWindowDimensions } from 'react-native';
 import { useTheme } from 'react-native-paper';
 import { useAuth } from '../../context/AuthContext';
+import DispenserScreen from './dispenser';
 import HomeScreen from './index';
 import PrescriptionsScreen from './prescriptions';
 import ReportsScreen from './reports';
@@ -28,6 +29,7 @@ export default function TabLayout() {
     { name: 'Prescriptions', component: PrescriptionsScreen, title: 'Prescriptions' },
     { name: 'Symptoms', component: SymptomsScreen, title: 'Symptoms' },
     { name: 'Reports', component: ReportsScreen, title: 'Reports' },
+    { name: 'Dispenser', component: DispenserScreen, title: 'Dispenser' },
     { name: 'Settings', component: SettingsScreen, title: 'Settings' },
   ];
   const doctorTabs = [
@@ -51,6 +53,8 @@ export default function TabLayout() {
             icon = <MaterialIcons name="sick" size={iconSize} color={focused ? '#fff' : color} />;
           } else if (route.name === 'Reports') {
             icon = <Ionicons name="document-text-outline" size={iconSize} color={focused ? '#fff' : color} />;
+          } else if (route.name === 'Dispenser') {
+            icon = <MaterialIcons name="medication" size={iconSize} color={focused ? '#fff' : color} />;
           } else if (route.name === 'Settings') {
             icon = <Ionicons name="settings-outline" size={iconSize} color={focused ? '#fff' : color} />;
           }

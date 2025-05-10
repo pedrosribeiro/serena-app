@@ -7,6 +7,7 @@ import React, { useEffect } from 'react';
 import { Text, View } from 'react-native';
 import 'react-native-reanimated';
 import { AuthProvider, useAuth } from '../context/AuthContext';
+import { SeniorProvider } from '../context/SeniorContext';
 import AuthGate from '../screens/AuthGate';
 
 export default function RootLayout() {
@@ -35,8 +36,10 @@ export default function RootLayout() {
 
   return (
     <AuthProvider>
-      <AuthContent />
-      <StatusBar style="auto" />
+      <SeniorProvider>
+        <AuthContent />
+        <StatusBar style="auto" />
+      </SeniorProvider>
     </AuthProvider>
   );
 }

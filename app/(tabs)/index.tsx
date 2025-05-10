@@ -1,63 +1,67 @@
 import { FontAwesome5, Ionicons, MaterialIcons } from '@expo/vector-icons';
-import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { useRouter } from 'expo-router';
+import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useAuth } from '../../context/AuthContext';
+import { useSenior } from '../../context/SeniorContext';
 
 export default function HomeScreen() {
   const { user } = useAuth();
+  const { selectedSenior } = useSenior();
+  const router = useRouter();
+  const navigation = useNavigation();
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      {/* Header com avatar e saudação */}
+      {/* Header with avatar and greeting */}
       <View style={styles.headerRow}>
         <View style={styles.avatarCircle}>
-          <Image source={require('../../assets/images/icon.png')} style={styles.avatarImg} />
+          <Image source={require('../../assets/images/user.png')} style={styles.avatarImg} />
         </View>
         <View style={{ flex: 1 }}>
-          <Text style={styles.hello}>Olá,</Text>
-          <Text style={styles.username}>{user?.name || 'Usuário'} 👋</Text>
+          <Text style={styles.hello}>Hi,</Text>
+          <Text style={styles.username}>{user?.name || 'User'} 👋</Text>
+          {selectedSenior && (
+            <Text style={styles.seniorLabel}>Managing: <Text style={styles.seniorName}>{selectedSenior.name}</Text></Text>
+          )}
         </View>
-        {/* Removido menu sanduíche */}
       </View>
 
-      {/* Cards de Atalhos */}
+      {/* Top Shortcuts */}
       <View style={styles.cardsRow}>
-        <View style={styles.metricCard}>
+        <TouchableOpacity style={styles.metricCard} onPress={() => alert('Appointments screen not implemented yet!')}>
           <MaterialIcons name="medical-services" size={32} color="#2bb3c0" />
-          <Text style={styles.cardTitle}>Consultas</Text>
-          <Text style={styles.cardSub}>6 médicos</Text>
-        </View>
-        <View style={styles.metricCard}>
-          <FontAwesome5 name="pills" size={32} color="#4ecb71" />
-          <Text style={styles.cardTitle}>Farmácia</Text>
-          <Text style={styles.cardSub}>4 farmácias</Text>
-        </View>
+          <Text style={styles.cardTitle}>Appointments</Text>
+          <Text style={styles.cardSub}>6 doctors</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.metricCard} onPress={() => navigation.navigate('Dispenser')}>
+          <MaterialIcons name="medication" size={32} color="#4ecb71" />
+          <Text style={styles.cardTitle}>Dispenser</Text>
+          <Text style={styles.cardSub}>Manage medications</Text>
+        </TouchableOpacity>
       </View>
 
-      {/* Métricas de Saúde */}
-      <Text style={styles.sectionTitle}>Minha Saúde</Text>
-      <View style={styles.metricsRow}>
-        <View style={styles.metricCard}>
-          <Ionicons name="heart" size={28} color="#e74c3c" />
-          <Text style={styles.metricValue}>78</Text>
-          <Text style={styles.metricLabel}>bpm</Text>
-        </View>
-        <View style={styles.metricCard}>
-          <Ionicons name="moon" size={28} color="#2bb3c0" />
-          <Text style={styles.metricValue}>8</Text>
-          <Text style={styles.metricLabel}>hrs sono</Text>
-        </View>
-      </View>
-
-      {/* Atalhos para outras telas */}
+      {/* Main Shortcuts */}
+      <Text style={styles.sectionTitle}>Shortcuts</Text>
       <View style={styles.cardsRow}>
-        <View style={styles.metricCard}>
+        <TouchableOpacity style={styles.metricCard} onPress={() => navigation.navigate('Prescriptions')}>
+          <FontAwesome5 name="pills" size={32} color="#2bb3c0" />
+          <Text style={styles.cardTitle}>Prescriptions</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.metricCard} onPress={() => navigation.navigate('Symptoms')}>
+          <MaterialIcons name="sick" size={32} color="#e74c3c" />
+          <Text style={styles.cardTitle}>Symptoms</Text>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.cardsRow}>
+        <TouchableOpacity style={styles.metricCard} onPress={() => navigation.navigate('Reports')}>
           <Ionicons name="document-text-outline" size={32} color="#2bb3c0" />
-          <Text style={styles.cardTitle}>Relatórios</Text>
-        </View>
-        <View style={styles.metricCard}>
+          <Text style={styles.cardTitle}>Reports</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.metricCard} onPress={() => navigation.navigate('Settings')}>
           <Ionicons name="settings-outline" size={32} color="#4ecb71" />
-          <Text style={styles.cardTitle}>Configurações</Text>
-        </View>
+          <Text style={styles.cardTitle}>Settings</Text>
+        </TouchableOpacity>
       </View>
     </ScrollView>
   );
@@ -105,6 +109,16 @@ const styles = StyleSheet.create({
     color: '#222',
     fontFamily: 'Montserrat-Bold',
   },
+  seniorLabel: {
+    fontSize: 13,
+    color: '#888',
+    fontFamily: 'Montserrat-Regular',
+    marginTop: 2,
+  },
+  seniorName: {
+    color: '#2bb3c0',
+    fontFamily: 'Montserrat-Bold',
+  },
   cardsRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -143,22 +157,5 @@ const styles = StyleSheet.create({
     marginTop: 18,
     marginBottom: 8,
     fontFamily: 'Montserrat-Bold',
-  },
-  metricsRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 18,
-  },
-  metricValue: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: '#222',
-    marginTop: 6,
-    fontFamily: 'Montserrat-Bold',
-  },
-  metricLabel: {
-    fontSize: 13,
-    color: '#888',
-    fontFamily: 'Montserrat-Regular',
   },
 });

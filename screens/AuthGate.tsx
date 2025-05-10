@@ -18,6 +18,5 @@ export default function AuthGate() {
   if (!user) {
     return <AuthForm />;
   }
-  // Enquanto redireciona, pode exibir um loading vazio
   return <View />;
 }

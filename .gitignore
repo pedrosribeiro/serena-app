@@ -44,6 +44,7 @@ app-example
 # Prisma
 prisma/*.db
 prisma/*.db-journal
-prisma/migration_lock.toml
+
+.vscode
 
 blog_merged.md

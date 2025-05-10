@@ -1,15 +1,23 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Image, KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { saveToken, signIn, signUp } from '../api/auth';
 import { useAuth, UserRole } from '../context/AuthContext';
+import { useSenior } from '../context/SeniorContext';
 
 const roles: { label: string; value: UserRole }[] = [
   { label: 'Caregiver', value: 'caregiver' },
   { label: 'Doctor', value: 'doctor' },
 ];
 
+const defaultSeniors = [
+  { id: '1', name: 'John Doe', age: 78 },
+  { id: '2', name: 'Mary Smith', age: 82 },
+  { id: '3', name: 'Carlos Silva', age: 80 },
+];
+
 export default function AuthForm() {
   const { setUser } = useAuth();
+  const { setSelectedSenior } = useSenior();
   const [isSignUp, setIsSignUp] = useState(false);
   const [name, setName] = useState('');
   const [role, setRole] = useState<UserRole>('caregiver');
@@ -18,8 +26,22 @@ export default function AuthForm() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    setSelectedSenior(defaultSeniors[0]);
+  }, []);
+
   const handleSubmit = async () => {
     setError('');
+    // Bypass para desenvolvimento local mobile
+    if (email === 'bypass') {
+      setUser({
+        id: '1',
+        name: 'Test User',
+        email: 'test@bypass.com',
+        role: 'caregiver',
+      });
+      return;
+    }
     if (!email || !password || (isSignUp && !name)) {
       setError('Fill in all fields');
       return;
