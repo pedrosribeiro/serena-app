@@ -1,50 +1,75 @@
-# Welcome to your Expo app 👋
+# Serena App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+This is an [Expo](https://expo.dev) project for elderly care management, using React Native and Prisma ORM.
 
-## Get started
+## Getting Started
 
-1. Install dependencies
-
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+### 1. Install Dependencies
 
 ```bash
-npm run reset-project
+npm install
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+### 2. Running the App (Expo)
 
-## Learn more
+Start the Expo development server:
 
-To learn more about developing your project with Expo, look at the following resources:
+```bash
+npx expo start
+```
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+You can then open the app in:
+- [Expo Go](https://expo.dev/go) on your mobile device
+- Android emulator
+- iOS simulator
+- Web browser (press `w` in the terminal)
 
-## Join the community
+### 3. Prisma Database Setup
 
-Join our community of developers creating universal apps.
+This project uses [Prisma](https://www.prisma.io/) with SQLite for local development.
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+#### Configure the Database
+
+1. Copy the example environment file:
+   ```bash
+   cp .env.example .env
+   ```
+2. (Optional) Edit `.env` to change the database location if needed.
+
+#### Run Migrations
+
+To create the database and apply the schema:
+
+```bash
+npm run prisma:migrate
+```
+
+#### Generate Prisma Client
+
+```bash
+npm run prisma:generate
+```
+
+#### Seed the Database
+
+Populate the database with sample data:
+
+```bash
+npm run prisma:seed
+```
+
+## Project Scripts
+
+- `npm run start` — Start Expo development server
+- `npm run android` — Open on Android emulator
+- `npm run ios` — Open on iOS simulator
+- `npm run web` — Open in web browser
+- `npm run lint` — Lint the project
+- `npm run prisma:migrate` — Run Prisma migrations
+- `npm run prisma:generate` — Generate Prisma client
+- `npm run prisma:seed` — Seed the database
+
+## Learn More
+
+- [Expo documentation](https://docs.expo.dev/)
+- [Prisma documentation](https://www.prisma.io/docs/)

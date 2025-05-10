@@ -5,7 +5,7 @@ import { useAuth } from '../../context/AuthContext';
 
 export default function SettingsScreen() {
   const [darkMode, setDarkMode] = useState(false);
-  const { setUser } = useAuth();
+  const { logout } = useAuth();
   const router = useRouter();
 
   const toggleDarkMode = () => {
@@ -13,8 +13,8 @@ export default function SettingsScreen() {
     alert(`Modo escuro ${!darkMode ? 'ativado' : 'desativado'}`);
   };
 
-  const handleSignOut = () => {
-    setUser(null);
+  const handleSignOut = async () => {
+    await logout();
     router.replace('/'); // Redirect to AuthGate/login
   };
 

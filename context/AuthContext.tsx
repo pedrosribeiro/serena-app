@@ -7,6 +7,7 @@ export type UserRole = 'caregiver' | 'doctor';
 export interface User {
   id: string;
   name: string;
+  email: string;
   role: UserRole;
 }
 export interface Patient {

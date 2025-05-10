@@ -41,4 +41,9 @@ yarn-error.*
 
 app-example
 
+# Prisma
+prisma/*.db
+prisma/*.db-journal
+prisma/migration_lock.toml
+
 blog_merged.md

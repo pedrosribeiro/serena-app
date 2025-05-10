@@ -7,7 +7,7 @@ async function main() {
     data: {
       name: 'Dr. Alice',
       email: 'alice@doctor.com',
-      passwordHash: 'hash1',
+      password: 'hash1',
       role: 'doctor',
     },
   });
@@ -16,7 +16,7 @@ async function main() {
     data: {
       name: 'Bob Caregiver',
       email: 'bob@care.com',
-      passwordHash: 'hash2',
+      password: 'hash2',
       role: 'caregiver',
     },
   });

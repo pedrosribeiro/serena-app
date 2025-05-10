@@ -4,8 +4,8 @@ import { saveToken, signIn, signUp } from '../api/auth';
 import { useAuth, UserRole } from '../context/AuthContext';
 
 const roles: { label: string; value: UserRole }[] = [
-  { label: 'Cuidador', value: 'caregiver' },
-  { label: 'Médico', value: 'doctor' },
+  { label: 'Caregiver', value: 'caregiver' },
+  { label: 'Doctor', value: 'doctor' },
 ];
 
 export default function AuthForm() {
@@ -21,7 +21,7 @@ export default function AuthForm() {
   const handleSubmit = async () => {
     setError('');
     if (!email || !password || (isSignUp && !name)) {
-      setError('Preencha todos os campos.');
+      setError('Fill in all fields');
       return;
     }
     setLoading(true);
@@ -29,14 +29,20 @@ export default function AuthForm() {
       if (isSignUp) {
         const res = await signUp({ name, email, password, role });
         await saveToken(res.token);
-        setUser({ id: res.user.id, name: res.user.name, role: res.user.role });
+        if (!res.user) throw new Error('Usuário não retornado pela API');
+        setUser({ id: res.user.id, name: res.user.name, email: res.user.email, role: res.user.role });
       } else {
         const res = await signIn({ email, password });
         await saveToken(res.token);
-        setUser({ id: res.user.id, name: res.user.name, role: res.user.role });
+        if (!res.user) throw new Error('Usuário não retornado pela API');
+        setUser({ id: res.user.id, name: res.user.name, email: res.user.email, role: res.user.role });
       }
     } catch (err: any) {
-      setError(err.message || 'Erro de autenticação.');
+      if (isSignUp && (err.message?.toLowerCase().includes('email already registered'))) {
+        setError('Este e-mail já está cadastrado. Faça login ou use outro e-mail.');
+      } else {
+        setError(err.message || 'Authentication failed');
+      }
     } finally {
       setLoading(false);
     }
@@ -89,17 +95,20 @@ export default function AuthForm() {
               </TouchableOpacity>
             )}
           </View>
-          <View style={styles.roleRow}>
-            {roles.map((r) => (
-              <TouchableOpacity
-                key={r.value}
-                onPress={() => setRole(r.value)}
-                style={[styles.roleBtn, role === r.value && styles.roleBtnActive]}
-              >
-                <Text style={[styles.roleText, role === r.value && styles.roleTextActive]}>{r.label}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
+          {/* Botões de seleção de role só aparecem no sign up */}
+          {isSignUp && (
+            <View style={styles.roleRow}>
+              {roles.map((r) => (
+                <TouchableOpacity
+                  key={r.value}
+                  onPress={() => setRole(r.value)}
+                  style={[styles.roleBtn, role === r.value && styles.roleBtnActive]}
+                >
+                  <Text style={[styles.roleText, role === r.value && styles.roleTextActive]}>{r.label}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          )}
           {error ? <Text style={styles.error}>{error}</Text> : null}
           <TouchableOpacity style={styles.loginBtn} onPress={handleSubmit} disabled={loading}>
             <Text style={styles.loginBtnText}>{loading ? 'Aguarde...' : isSignUp ? 'Sign up' : 'Log in'}</Text>
