@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react';
-import { removeToken } from '../api/auth';
+import { getToken, removeToken } from '../api/auth';
 
 // Tipos de usuário e paciente
 export type UserRole = 'caregiver' | 'doctor';
@@ -34,26 +34,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [patients, setPatients] = useState<Patient[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Load user from storage on mount
+  // Load user and token from storage on mount, and validate token
   useEffect(() => {
     (async () => {
       const storedUser = await AsyncStorage.getItem('user');
-      if (storedUser) {
+      const token = await getToken();
+      if (storedUser && token) {
         setUser(JSON.parse(storedUser));
+      } else {
+        setUser(null);
+        await removeToken();
       }
       setLoading(false);
     })();
   }, []);
 
-  // Persist user to storage
-  useEffect(() => {
-    if (user) {
-      AsyncStorage.setItem('user', JSON.stringify(user));
-    } else {
-      AsyncStorage.removeItem('user');
-    }
-  }, [user]);
-
+  // Função robusta de logout
   const logout = async () => {
     setUser(null);
     await removeToken();

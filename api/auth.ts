@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { API_BASE_URL } from '../constants/api';
 
-const API_URL = 'http://localhost:8000';
+const API_URL = API_BASE_URL; // Use a base centralizada
 
 export async function signUp({ name, email, password, role }: { name: string; email: string; password: string; role: string }) {
   const response = await fetch(`${API_URL}/auth/register`, {

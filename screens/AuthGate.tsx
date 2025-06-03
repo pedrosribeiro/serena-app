@@ -1,22 +1,13 @@
-import { useRouter } from 'expo-router';
-import React, { useEffect } from 'react';
-import { View } from 'react-native';
+import React from 'react';
 import AuthForm from '../components/AuthForm';
 import { useAuth } from '../context/AuthContext';
+import SeniorGate from './SeniorGate';
 
 export default function AuthGate() {
   const { user } = useAuth();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (user) {
-      // Always redirect to the main tab after login or reload
-      router.replace('/(tabs)');
-    }
-  }, [user]);
 
   if (!user) {
     return <AuthForm />;
   }
-  return <View />;
+  return <SeniorGate />;
 }
