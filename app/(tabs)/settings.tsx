@@ -3,20 +3,11 @@ import { ScrollView, StyleSheet, Switch, Text, TouchableOpacity, View } from 're
 import { useAuth } from '../../context/AuthContext';
 import { useSenior } from '../../context/SeniorContext';
 
-// Exemplo de idosos sob cuidado, substituir por dados reais futuramente
-const seniors = [
-  { id: '1', name: 'John Doe', age: 78 },
-  { id: '2', name: 'Mary Smith', age: 82 },
-  { id: '3', name: 'Carlos Silva', age: 80 },
-];
-
 export default function SettingsScreen() {
   const { user, logout } = useAuth();
-  const { selectedSenior, setSelectedSenior } = useSenior();
+  const { selectedSenior, setSelectedSenior, seniors } = useSenior();
   const [language, setLanguage] = useState('en');
   const [darkMode, setDarkMode] = useState(false);
-
-  // Funções de troca de idioma e tema podem ser integradas com contexto futuramente
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -24,15 +15,19 @@ export default function SettingsScreen() {
 
       <View style={styles.card}>
         <Text style={styles.cardTitle}>Select Senior</Text>
-        {seniors.map((senior) => (
-          <TouchableOpacity
-            key={senior.id}
-            style={[styles.seniorButton, selectedSenior?.id === senior.id && styles.seniorButtonSelected]}
-            onPress={() => setSelectedSenior(senior)}
-          >
-            <Text style={[styles.seniorName, selectedSenior?.id === senior.id && styles.seniorButtonSelectedText]}>{senior.name} ({senior.age} yrs)</Text>
-          </TouchableOpacity>
-        ))}
+        {seniors.length === 0 ? (
+          <Text>No seniors found.</Text>
+        ) : (
+          seniors.map((senior) => (
+            <TouchableOpacity
+              key={senior.id}
+              style={[styles.seniorButton, selectedSenior?.id === senior.id && styles.seniorButtonSelected]}
+              onPress={() => setSelectedSenior(senior)}
+            >
+              <Text style={[styles.seniorName, selectedSenior?.id === senior.id && styles.seniorButtonSelectedText]}>{senior.name} ({senior.age} yrs)</Text>
+            </TouchableOpacity>
+          ))
+        )}
       </View>
 
       <View style={styles.card}>

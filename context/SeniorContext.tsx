@@ -4,19 +4,24 @@ interface Senior {
   id: string;
   name: string;
   age: number;
+  // Permite outros campos vindos da API
+  [key: string]: any;
 }
 
 interface SeniorContextType {
   selectedSenior: Senior | null;
   setSelectedSenior: (senior: Senior) => void;
+  seniors: Senior[];
+  setSeniors: (seniors: Senior[]) => void;
 }
 
 const SeniorContext = createContext<SeniorContextType | undefined>(undefined);
 
 export const SeniorProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [selectedSenior, setSelectedSenior] = useState<Senior | null>(null);
+  const [seniors, setSeniors] = useState<Senior[]>([]);
   return (
-    <SeniorContext.Provider value={{ selectedSenior, setSelectedSenior }}>
+    <SeniorContext.Provider value={{ selectedSenior, setSelectedSenior, seniors, setSeniors }}>
       {children}
     </SeniorContext.Provider>
   );

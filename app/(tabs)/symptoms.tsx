@@ -1,17 +1,59 @@
 import { FontAwesome5 } from '@expo/vector-icons';
+import { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { getToken } from '../../api/auth';
+import { API_BASE_URL } from '../../constants/api';
 import { useAuth } from '../../context/AuthContext';
 import { useSenior } from '../../context/SeniorContext';
 
 export default function SymptomsScreen() {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const { selectedSenior } = useSenior();
-  // Exemplo de sintomas relatados, substituir por dados reais futuramente
-  const symptoms = [
-    { id: 1, name: 'Headache', date: '10/05/2025', severity: 'Slight' },
-    { id: 2, name: 'Nausea', date: '09/05/2025', severity: 'Moderate' },
-    { id: 3, name: 'Cramps', date: '09/05/2025', severity: 'Strong' },
-  ];
+  const [symptoms, setSymptoms] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    const fetchSymptoms = async () => {
+      if (!selectedSenior) return;
+      setLoading(true);
+      setError('');
+      try {
+        const token = await getToken();
+        if (!token) throw new Error('Unauthorized');
+        const res = await fetch(`${API_BASE_URL}/symptoms/by_senior/${selectedSenior.id}`, {
+          headers: {
+            'accept': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+        if (res.status === 401) {
+          logout();
+          return;
+        }
+        if (!res.ok) throw new Error('Erro ao carregar sintomas');
+        const data = await res.json();
+        setSymptoms(data);
+      } catch (e) {
+        setError('Erro ao carregar sintomas. Tente novamente.');
+        setSymptoms([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchSymptoms();
+  }, [selectedSenior]);
+
+  function formatDate(dateStr: string) {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }
+
+  function mapPainLevel(level: number) {
+    if (level <= 3) return 'Leve';
+    if (level <= 6) return 'Moderado';
+    return 'Forte';
+  }
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -19,8 +61,12 @@ export default function SymptomsScreen() {
       {selectedSenior && (
         <Text style={styles.seniorLabel}>Viewing data for: <Text style={styles.seniorName}>{selectedSenior.name}</Text></Text>
       )}
-      {symptoms.length === 0 ? (
-        <Text style={styles.emptyText}>No symptoms reported by the senior so far.</Text>
+      {loading ? (
+        <Text style={styles.emptyText}>Carregando sintomas...</Text>
+      ) : error ? (
+        <Text style={styles.emptyText}>{error}</Text>
+      ) : symptoms.length === 0 ? (
+        <Text style={styles.emptyText}>Nenhum sintoma registrado para este senior.</Text>
       ) : (
         symptoms.map((symptom) => (
           <View key={symptom.id} style={styles.symptomCard}>
@@ -28,13 +74,16 @@ export default function SymptomsScreen() {
               <FontAwesome5 name="heartbeat" size={28} color="#2bb3c0" style={{ marginRight: 12 }} />
               <View>
                 <Text style={styles.symptomName}>{symptom.name}</Text>
-                <Text style={styles.symptomDate}>{symptom.date}</Text>
+                <Text style={styles.symptomDate}>{formatDate(symptom.created_at)}</Text>
               </View>
             </View>
-            <Text style={styles.severityLabel}>Severity:</Text>
+            <Text style={styles.severityLabel}>Nível de dor:</Text>
             <View style={styles.severityBadge}>
-              <Text style={styles.severityText}>{symptom.severity}</Text>
+              <Text style={styles.severityText}>{mapPainLevel(symptom.pain_level)}</Text>
             </View>
+            {symptom.description ? (
+              <Text style={styles.symptomDesc}>{symptom.description}</Text>
+            ) : null}
           </View>
         ))
       )}
@@ -114,5 +163,11 @@ const styles = StyleSheet.create({
     fontFamily: 'Montserrat-Regular',
     textAlign: 'center',
     marginTop: 40,
+  },
+  symptomDesc: {
+    fontSize: 14,
+    color: '#555',
+    fontFamily: 'Montserrat-Regular',
+    marginTop: 8,
   },
 });

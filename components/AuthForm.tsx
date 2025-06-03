@@ -9,15 +9,9 @@ const roles: { label: string; value: UserRole }[] = [
   { label: 'Doctor', value: 'doctor' },
 ];
 
-const defaultSeniors = [
-  { id: '1', name: 'John Doe', age: 78 },
-  { id: '2', name: 'Mary Smith', age: 82 },
-  { id: '3', name: 'Carlos Silva', age: 80 },
-];
-
 export default function AuthForm() {
   const { setUser } = useAuth();
-  const { setSelectedSenior } = useSenior();
+  const { setSelectedSenior, setSeniors } = useSenior();
   const [isSignUp, setIsSignUp] = useState(false);
   const [name, setName] = useState('');
   const [role, setRole] = useState<UserRole>('caregiver');
@@ -27,7 +21,39 @@ export default function AuthForm() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    setSelectedSenior(defaultSeniors[0]);
+    // Busca seniors reais do backend e seleciona o primeiro, se houver
+    async function fetchAndSetFirstSenior() {
+      try {
+        const token = await import('../api/auth').then(m => m.getToken());
+        const { user } = await import('../context/AuthContext').then(m => m.useAuth());
+        const { API_BASE_URL } = await import('../constants/api');
+        if (!user || !token) return;
+        const res = await fetch(`${API_BASE_URL}/senior/by_user/${user.id}`, {
+          headers: {
+            'accept': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data) && data.length > 0) {
+            // Calcula idade
+            const seniorsWithAge = data.map((senior: any) => {
+              const [day, month, year] = senior.birth_date.split('/').map(Number);
+              const birth = new Date(year, month - 1, day);
+              const today = new Date();
+              let age = today.getFullYear() - birth.getFullYear();
+              const m = today.getMonth() - birth.getMonth();
+              if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
+              return { ...senior, age };
+            });
+            setSeniors(seniorsWithAge);
+            setSelectedSenior(seniorsWithAge[0]);
+          }
+        }
+      } catch {}
+    }
+    fetchAndSetFirstSenior();
   }, []);
 
   const handleSubmit = async () => {
@@ -48,22 +74,47 @@ export default function AuthForm() {
     }
     setLoading(true);
     try {
+      let res;
       if (isSignUp) {
-        const res = await signUp({ name, email, password, role });
-        await saveToken(res.token);
-        if (!res.user) throw new Error('Usuário não retornado pela API');
-        setUser({ id: res.user.id, name: res.user.name, email: res.user.email, role: res.user.role });
+        res = await signUp({ name, email, password, role });
       } else {
-        const res = await signIn({ email, password });
-        await saveToken(res.token);
-        if (!res.user) throw new Error('Usuário não retornado pela API');
-        setUser({ id: res.user.id, name: res.user.name, email: res.user.email, role: res.user.role });
+        res = await signIn({ email, password });
+      }
+      await saveToken(res.token);
+      if (!res.user) throw new Error('Usuário não retornado pela API');
+      setUser({ id: res.user.id, name: res.user.name, email: res.user.email, role: res.user.role });
+
+      // Buscar seniors do backend e setar no contexto global
+      const token = res.token;
+      const API_BASE_URL = require('../constants/api').API_BASE_URL;
+      const seniorsRes = await fetch(`${API_BASE_URL}/senior/by_user/${res.user.id}`, {
+        headers: {
+          'accept': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+      if (seniorsRes.ok) {
+        const data = await seniorsRes.json();
+        const seniorsWithAge = (data as any[]).map((senior: any) => {
+          const [day, month, year] = senior.birth_date.split('/').map(Number);
+          const birth = new Date(year, month - 1, day);
+          const today = new Date();
+          let age = today.getFullYear() - birth.getFullYear();
+          const m = today.getMonth() - birth.getMonth();
+          if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
+          return { ...senior, age };
+        });
+        setSeniors(seniorsWithAge);
+        if (seniorsWithAge.length > 0) setSelectedSenior(seniorsWithAge[0]);
+      } else {
+        setSeniors([]);
+        // Não seta selectedSenior para null pois o tipo não permite
       }
     } catch (err: any) {
       if (isSignUp && (err.message?.toLowerCase().includes('email already registered'))) {
         setError('Este e-mail já está cadastrado. Faça login ou use outro e-mail.');
       } else {
-        setError(err.message || 'Authentication failed');
+        setError((err as any).message || 'Authentication failed');
       }
     } finally {
       setLoading(false);
