@@ -4,6 +4,7 @@ import { useIsFocused } from '@react-navigation/native';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { getToken } from '../../api/auth';
 import { API_BASE_URL } from '../../constants/api';
 import { useSenior } from '../../context/SeniorContext';
@@ -160,81 +161,83 @@ export default function DispenserScreen() {
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.sectionTitle}>Dispenser Management</Text>
-      <Text style={styles.sectionDesc}>Tap a slot in the circle to edit its medication.</Text>
-      {selectedSenior && (
-        <Text style={styles.seniorLabel}>Viewing data for: <Text style={styles.seniorName}>{selectedSenior.name}</Text></Text>
-      )}
-      {error ? <Text style={{ color: 'red', marginBottom: 10 }}>{error}</Text> : null}
-      {loading ? (
-        <Text style={{ color: '#888', marginBottom: 10 }}>Carregando...</Text>
-      ) : null}
-      <View style={styles.circleContainer}>
-        <View style={styles.circleBg}>
-          {slots.map((slot, idx) => (
-            <TouchableOpacity
-              key={slot.id}
-              style={getSlotStyle(idx)}
-              onPress={() => handleEdit(slot)}
-              activeOpacity={0.7}
-              disabled={loading}
-            >
-              <View style={[styles.slotFat, {
-                backgroundColor: slot.medication_name ? (editingSlot === slot.id ? '#1e8a9e' : '#2bb3c0') : '#e6ecfa',
-                width: 50,
-                height: 50,
-                borderRadius: 25,
-              }] }>
-                <FontAwesome5 name="capsules" size={14} color={slot.medication_name ? '#fff' : '#b0c4d4'} />
-                <Text style={[styles.fatText, { fontSize: 9 }]} numberOfLines={1}>{slot.medication_name || slot.id}</Text>
-                <Text style={[styles.fatQty, { fontSize: 9 }]}>{slot.quantity}</Text>
-              </View>
-            </TouchableOpacity>
-          ))}
-          <View style={styles.circleCenter} />
-        </View>
-      </View>
-      {editingSlot && (
-        <View style={styles.editCard}>
-          <Text style={styles.editTitle}>Edit Slot</Text>
-          {medicationsLoading ? (
-            <Text style={{ color: '#888', marginBottom: 8 }}>Carregando medicamentos...</Text>
-          ) : medicationsError ? (
-            <Text style={{ color: 'red', marginBottom: 8 }}>{medicationsError}</Text>
-          ) : (
-            <View style={styles.pickerWrapper}>
-              <Picker
-                selectedValue={selectedMedicationId}
-                onValueChange={setSelectedMedicationId}
-                enabled={!loading}
-                style={styles.picker}
-                dropdownIconColor="#2bb3c0"
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#f8fcff' }}>
+      <ScrollView contentContainerStyle={styles.container}>
+        <Text style={styles.sectionTitle}>Dispenser Management</Text>
+        <Text style={styles.sectionDesc}>Tap a slot in the circle to edit its medication.</Text>
+        {selectedSenior && (
+          <Text style={styles.seniorLabel}>Viewing data for: <Text style={styles.seniorName}>{selectedSenior.name}</Text></Text>
+        )}
+        {error ? <Text style={{ color: 'red', marginBottom: 10 }}>{error}</Text> : null}
+        {loading ? (
+          <Text style={{ color: '#888', marginBottom: 10 }}>Carregando...</Text>
+        ) : null}
+        <View style={styles.circleContainer}>
+          <View style={styles.circleBg}>
+            {slots.map((slot, idx) => (
+              <TouchableOpacity
+                key={slot.id}
+                style={getSlotStyle(idx)}
+                onPress={() => handleEdit(slot)}
+                activeOpacity={0.7}
+                disabled={loading}
               >
-                <Picker.Item label="Selecione o medicamento" value="" color="#888" />
-                {medications.map((med: any) => (
-                  <Picker.Item key={med.id} label={med.name} value={med.id} color="#222" />
-                ))}
-              </Picker>
-            </View>
-          )}
-          <TextInput
-            style={styles.input}
-            placeholder="Quantity"
-            value={newQty}
-            onChangeText={setNewQty}
-            keyboardType="numeric"
-            editable={!loading}
-          />
-          <TouchableOpacity style={styles.saveButton} onPress={() => handleSave(editingSlot)} disabled={loading || medicationsLoading}>
-            <Text style={styles.saveButtonText}>{loading ? 'Saving...' : 'Save'}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.cancelButton} onPress={() => setEditingSlot(null)} disabled={loading}>
-            <Text style={styles.cancelButtonText}>Cancel</Text>
-          </TouchableOpacity>
+                <View style={[styles.slotFat, {
+                  backgroundColor: slot.medication_name ? (editingSlot === slot.id ? '#1e8a9e' : '#2bb3c0') : '#e6ecfa',
+                  width: 50,
+                  height: 50,
+                  borderRadius: 25,
+                }] }>
+                  <FontAwesome5 name="capsules" size={14} color={slot.medication_name ? '#fff' : '#b0c4d4'} />
+                  <Text style={[styles.fatText, { fontSize: 9 }]} numberOfLines={1}>{slot.medication_name || slot.id}</Text>
+                  <Text style={[styles.fatQty, { fontSize: 9 }]}>{slot.quantity}</Text>
+                </View>
+              </TouchableOpacity>
+            ))}
+            <View style={styles.circleCenter} />
+          </View>
         </View>
-      )}
-    </ScrollView>
+        {editingSlot && (
+          <View style={styles.editCard}>
+            <Text style={styles.editTitle}>Edit Slot</Text>
+            {medicationsLoading ? (
+              <Text style={{ color: '#888', marginBottom: 8 }}>Carregando medicamentos...</Text>
+            ) : medicationsError ? (
+              <Text style={{ color: 'red', marginBottom: 8 }}>{medicationsError}</Text>
+            ) : (
+              <View style={styles.pickerWrapper}>
+                <Picker
+                  selectedValue={selectedMedicationId}
+                  onValueChange={setSelectedMedicationId}
+                  enabled={!loading}
+                  style={styles.picker}
+                  dropdownIconColor="#2bb3c0"
+                >
+                  <Picker.Item label="Selecione o medicamento" value="" color="#888" />
+                  {medications.map((med: any) => (
+                    <Picker.Item key={med.id} label={med.name} value={med.id} color="#222" />
+                  ))}
+                </Picker>
+              </View>
+            )}
+            <TextInput
+              style={styles.input}
+              placeholder="Quantity"
+              value={newQty}
+              onChangeText={setNewQty}
+              keyboardType="numeric"
+              editable={!loading}
+            />
+            <TouchableOpacity style={styles.saveButton} onPress={() => handleSave(editingSlot)} disabled={loading || medicationsLoading}>
+              <Text style={styles.saveButtonText}>{loading ? 'Saving...' : 'Save'}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.cancelButton} onPress={() => setEditingSlot(null)} disabled={loading}>
+              <Text style={styles.cancelButtonText}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 

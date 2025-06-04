@@ -2,6 +2,7 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { useIsFocused } from '@react-navigation/native';
 import { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { getToken } from '../../api/auth';
 import { API_BASE_URL } from '../../constants/api';
 import { useAuth } from '../../context/AuthContext';
@@ -58,38 +59,40 @@ export default function SymptomsScreen() {
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.sectionTitle}>Reported Symptoms</Text>
-      {selectedSenior && (
-        <Text style={styles.seniorLabel}>Viewing data for: <Text style={styles.seniorName}>{selectedSenior.name}</Text></Text>
-      )}
-      {loading ? (
-        <Text style={styles.emptyText}>Carregando sintomas...</Text>
-      ) : error ? (
-        <Text style={styles.emptyText}>{error}</Text>
-      ) : symptoms.length === 0 ? (
-        <Text style={styles.emptyText}>Nenhum sintoma registrado para este senior.</Text>
-      ) : (
-        symptoms.map((symptom) => (
-          <View key={symptom.id} style={styles.symptomCard}>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <FontAwesome5 name="heartbeat" size={28} color="#2bb3c0" style={{ marginRight: 12 }} />
-              <View>
-                <Text style={styles.symptomName}>{symptom.name}</Text>
-                <Text style={styles.symptomDate}>{formatDate(symptom.created_at)}</Text>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#f8fcff' }}>
+      <ScrollView contentContainerStyle={styles.container}>
+        <Text style={styles.sectionTitle}>Reported Symptoms</Text>
+        {selectedSenior && (
+          <Text style={styles.seniorLabel}>Viewing data for: <Text style={styles.seniorName}>{selectedSenior.name}</Text></Text>
+        )}
+        {loading ? (
+          <Text style={styles.emptyText}>Carregando sintomas...</Text>
+        ) : error ? (
+          <Text style={styles.emptyText}>{error}</Text>
+        ) : symptoms.length === 0 ? (
+          <Text style={styles.emptyText}>Nenhum sintoma registrado para este senior.</Text>
+        ) : (
+          symptoms.map((symptom) => (
+            <View key={symptom.id} style={styles.symptomCard}>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <FontAwesome5 name="heartbeat" size={28} color="#2bb3c0" style={{ marginRight: 12 }} />
+                <View>
+                  <Text style={styles.symptomName}>{symptom.name}</Text>
+                  <Text style={styles.symptomDate}>{formatDate(symptom.created_at)}</Text>
+                </View>
               </View>
+              <Text style={styles.severityLabel}>Nível de dor:</Text>
+              <View style={styles.severityBadge}>
+                <Text style={styles.severityText}>{mapPainLevel(symptom.pain_level)}</Text>
+              </View>
+              {symptom.description ? (
+                <Text style={styles.symptomDesc}>{symptom.description}</Text>
+              ) : null}
             </View>
-            <Text style={styles.severityLabel}>Nível de dor:</Text>
-            <View style={styles.severityBadge}>
-              <Text style={styles.severityText}>{mapPainLevel(symptom.pain_level)}</Text>
-            </View>
-            {symptom.description ? (
-              <Text style={styles.symptomDesc}>{symptom.description}</Text>
-            ) : null}
-          </View>
-        ))
-      )}
-    </ScrollView>
+          ))
+        )}
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 

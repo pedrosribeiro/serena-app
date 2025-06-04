@@ -2,6 +2,7 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { useIsFocused } from '@react-navigation/native';
 import { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { getToken } from '../../api/auth';
 import { API_BASE_URL } from '../../constants/api';
 import { useAuth } from '../../context/AuthContext';
@@ -69,52 +70,54 @@ export default function PrescriptionsScreen() {
   }, [selectedSenior, isFocused]);
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.sectionTitle}>Prescriptions for the Senior</Text>
-      {selectedSenior && (
-        <Text style={styles.seniorLabel}>Viewing data for: <Text style={styles.seniorName}>{selectedSenior.name}</Text></Text>
-      )}
-      {loading ? (
-        <Text style={styles.emptyText}>Carregando prescrições...</Text>
-      ) : error ? (
-        <Text style={styles.emptyText}>{error}</Text>
-      ) : prescriptions.length === 0 ? (
-        <Text style={styles.emptyText}>Nenhuma prescrição registrada para este senior.</Text>
-      ) : (
-        prescriptions.map((med) => (
-          <View key={med.id} style={styles.prescriptionCard}>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <FontAwesome5 name="pills" size={28} color="#2bb3c0" style={{ marginRight: 12 }} />
-              <View>
-                <Text style={styles.medName}>{med.medication?.name || 'Medicamento'}</Text>
-                <Text style={styles.dosage}>{med.dosage}</Text>
-                {med.doctor?.name && (
-                  <Text style={styles.doctorName}>Prescrito por: {med.doctor.name}</Text>
-                )}
-              </View>
-            </View>
-            <Text style={styles.timesLabel}>Frequência: a cada {med.frequency}h</Text>
-            <View style={styles.timesRow}>
-              {generateTimes(med.frequency, med.start_date, med.end_date).map((t, i) => (
-                <View key={i} style={styles.timeBadge}>
-                  <Text style={styles.timeText}>{t}</Text>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#f8fcff' }}>
+      <ScrollView contentContainerStyle={styles.container}>
+        <Text style={styles.sectionTitle}>Prescriptions for the Senior</Text>
+        {selectedSenior && (
+          <Text style={styles.seniorLabel}>Viewing data for: <Text style={styles.seniorName}>{selectedSenior.name}</Text></Text>
+        )}
+        {loading ? (
+          <Text style={styles.emptyText}>Carregando prescrições...</Text>
+        ) : error ? (
+          <Text style={styles.emptyText}>{error}</Text>
+        ) : prescriptions.length === 0 ? (
+          <Text style={styles.emptyText}>Nenhuma prescrição registrada para este senior.</Text>
+        ) : (
+          prescriptions.map((med) => (
+            <View key={med.id} style={styles.prescriptionCard}>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <FontAwesome5 name="pills" size={28} color="#2bb3c0" style={{ marginRight: 12 }} />
+                <View>
+                  <Text style={styles.medName}>{med.medication?.name || 'Medicamento'}</Text>
+                  <Text style={styles.dosage}>{med.dosage}</Text>
+                  {med.doctor?.name && (
+                    <Text style={styles.doctorName}>Prescrito por: {med.doctor.name}</Text>
+                  )}
                 </View>
-              ))}
+              </View>
+              <Text style={styles.timesLabel}>Frequência: a cada {med.frequency}h</Text>
+              <View style={styles.timesRow}>
+                {generateTimes(med.frequency, med.start_date, med.end_date).map((t, i) => (
+                  <View key={i} style={styles.timeBadge}>
+                    <Text style={styles.timeText}>{t}</Text>
+                  </View>
+                ))}
+              </View>
+              <Text style={styles.timesLabel}>Período:</Text>
+              <Text style={styles.dosage}>{formatDate(med.start_date)} até {formatDate(med.end_date)}</Text>
+              {med.description ? (
+                <Text style={styles.dosage}>{med.description}</Text>
+              ) : null}
             </View>
-            <Text style={styles.timesLabel}>Período:</Text>
-            <Text style={styles.dosage}>{formatDate(med.start_date)} até {formatDate(med.end_date)}</Text>
-            {med.description ? (
-              <Text style={styles.dosage}>{med.description}</Text>
-            ) : null}
-          </View>
-        ))
-      )}
-      {user?.role === 'doctor' && (
-        <TouchableOpacity style={styles.editButton} onPress={() => alert('Prescription editing functionality!')}>
-          <Text style={styles.editButtonText}>Edit prescriptions</Text>
-        </TouchableOpacity>
-      )}
-    </ScrollView>
+          ))
+        )}
+        {user?.role === 'doctor' && (
+          <TouchableOpacity style={styles.editButton} onPress={() => alert('Prescription editing functionality!')}>
+            <Text style={styles.editButtonText}>Edit prescriptions</Text>
+          </TouchableOpacity>
+        )}
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 

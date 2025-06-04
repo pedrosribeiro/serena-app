@@ -1,6 +1,7 @@
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { Modal, ScrollView, StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '../../context/AuthContext';
 import { useSenior } from '../../context/SeniorContext';
 import CreateSeniorScreen from '../../screens/CreateSeniorScreen';
@@ -31,81 +32,83 @@ export default function SettingsScreen() {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.sectionTitle}>Settings</Text>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#f8fcff' }}>
+      <ScrollView contentContainerStyle={styles.container}>
+        <Text style={styles.sectionTitle}>Settings</Text>
 
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>Select Senior</Text>
-        {seniors.length === 0 ? (
-          <Text>No seniors found.</Text>
-        ) : (
-          seniors.map((senior) => (
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>Select Senior</Text>
+          {seniors.length === 0 ? (
+            <Text>No seniors found.</Text>
+          ) : (
+            seniors.map((senior) => (
+              <TouchableOpacity
+                key={senior.id}
+                style={[styles.seniorButton, selectedSenior?.id === senior.id && styles.seniorButtonSelected]}
+                onPress={() => setSelectedSenior(senior)}
+              >
+                <Text style={[styles.seniorName, selectedSenior?.id === senior.id && styles.seniorButtonSelectedText]}>{senior.name} ({senior.age} yrs)</Text>
+              </TouchableOpacity>
+            ))
+          )
+          }
+        </View>
+
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>Language</Text>
+          <View style={styles.row}>
             <TouchableOpacity
-              key={senior.id}
-              style={[styles.seniorButton, selectedSenior?.id === senior.id && styles.seniorButtonSelected]}
-              onPress={() => setSelectedSenior(senior)}
+              style={[styles.langButton, language === 'en' && styles.langButtonSelected]}
+              onPress={() => setLanguage('en')}
             >
-              <Text style={[styles.seniorName, selectedSenior?.id === senior.id && styles.seniorButtonSelectedText]}>{senior.name} ({senior.age} yrs)</Text>
+              <Text style={[styles.langText, language === 'en' && styles.langButtonSelectedText]}>English</Text>
             </TouchableOpacity>
-          ))
-        )
-        }
-      </View>
-
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>Language</Text>
-        <View style={styles.row}>
-          <TouchableOpacity
-            style={[styles.langButton, language === 'en' && styles.langButtonSelected]}
-            onPress={() => setLanguage('en')}
-          >
-            <Text style={[styles.langText, language === 'en' && styles.langButtonSelectedText]}>English</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.langButton, language === 'pt' && styles.langButtonSelected]}
-            onPress={() => setLanguage('pt')}
-          >
-            <Text style={[styles.langText, language === 'pt' && styles.langButtonSelectedText]}>Português</Text>
-          </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.langButton, language === 'pt' && styles.langButtonSelected]}
+              onPress={() => setLanguage('pt')}
+            >
+              <Text style={[styles.langText, language === 'pt' && styles.langButtonSelectedText]}>Português</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
 
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>Theme</Text>
-        <View style={styles.row}>
-          <Text style={styles.themeText}>{darkMode ? 'Dark' : 'Light'} mode</Text>
-          <Switch value={darkMode} onValueChange={setDarkMode} />
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>Theme</Text>
+          <View style={styles.row}>
+            <Text style={styles.themeText}>{darkMode ? 'Dark' : 'Light'} mode</Text>
+            <Switch value={darkMode} onValueChange={setDarkMode} />
+          </View>
         </View>
-      </View>
 
-      <TouchableOpacity style={styles.card} onPress={() => setShowSeniorModal(true)}>
-        <Text style={styles.cardTitle}>Gerenciar Senior</Text>
-        <Text style={[styles.themeText, { marginTop: 4 }]}>Vincular-se ou criar um novo senior</Text>
-      </TouchableOpacity>
+        <TouchableOpacity style={styles.card} onPress={() => setShowSeniorModal(true)}>
+          <Text style={styles.cardTitle}>Gerenciar Senior</Text>
+          <Text style={[styles.themeText, { marginTop: 4 }]}>Vincular-se ou criar um novo senior</Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity style={styles.logoutButton} onPress={logout}>
-        <Text style={styles.logoutButtonText}>Logout</Text>
-      </TouchableOpacity>
+        <TouchableOpacity style={styles.logoutButton} onPress={logout}>
+          <Text style={styles.logoutButtonText}>Logout</Text>
+        </TouchableOpacity>
 
-      <Modal visible={showSeniorModal} animationType="slide" onRequestClose={() => setShowSeniorModal(false)}>
-        <View style={{ flex: 1, backgroundColor: '#f8fcff' }}>
-          {token && !showCreate && user && (
-            <RelateSeniorScreen
-              userId={user.id}
-              token={token}
-              onSuccess={handleSeniorSuccess}
-              onCreateSenior={() => setShowCreate(true)}
-            />
-          )}
-          {token && showCreate && (
-            <CreateSeniorScreen token={token} onSuccess={handleSeniorSuccess} onBack={() => setShowCreate(false)} />
-          )}
-          <TouchableOpacity style={{ margin: 24, alignSelf: 'center' }} onPress={() => setShowSeniorModal(false)}>
-            <Text style={{ color: '#e74c3c', fontSize: 16, fontWeight: 'bold' }}>Cancelar</Text>
-          </TouchableOpacity>
-        </View>
-      </Modal>
-    </ScrollView>
+        <Modal visible={showSeniorModal} animationType="slide" onRequestClose={() => setShowSeniorModal(false)}>
+          <View style={{ flex: 1, backgroundColor: '#f8fcff' }}>
+            {token && !showCreate && user && (
+              <RelateSeniorScreen
+                userId={user.id}
+                token={token}
+                onSuccess={handleSeniorSuccess}
+                onCreateSenior={() => setShowCreate(true)}
+              />
+            )}
+            {token && showCreate && (
+              <CreateSeniorScreen token={token} onSuccess={handleSeniorSuccess} onBack={() => setShowCreate(false)} />
+            )}
+            <TouchableOpacity style={{ margin: 24, alignSelf: 'center' }} onPress={() => setShowSeniorModal(false)}>
+              <Text style={{ color: '#e74c3c', fontSize: 16, fontWeight: 'bold' }}>Cancelar</Text>
+            </TouchableOpacity>
+          </View>
+        </Modal>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 

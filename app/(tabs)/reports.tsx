@@ -1,5 +1,6 @@
 import { FontAwesome5 } from '@expo/vector-icons';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '../../context/AuthContext';
 import { useSenior } from '../../context/SeniorContext';
 
@@ -31,56 +32,58 @@ export default function ReportsScreen() {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.sectionTitle}>Senior Report</Text>
-      {selectedSenior && (
-        <Text style={styles.seniorLabel}>Viewing data for: <Text style={styles.seniorName}>{selectedSenior.name}</Text></Text>
-      )}
-      <View style={styles.infoCard}>
-        <Text style={styles.infoTitle}>Personal Information</Text>
-        <Text style={styles.infoText}>Name: {senior.name}</Text>
-        <Text style={styles.infoText}>Age: {senior.age}</Text>
-        <Text style={styles.infoText}>Identifier: {senior.identifier}</Text>
-      </View>
-      <View style={styles.infoCard}>
-        <Text style={styles.infoTitle}>Doctors</Text>
-        {senior.doctors.map((doc, i) => (
-          <Text key={i} style={styles.infoText}>{doc.name} ({doc.specialty})</Text>
-        ))}
-      </View>
-      <View style={styles.infoCard}>
-        <Text style={styles.infoTitle}>Current Treatment</Text>
-        {senior.prescriptions.map((med, i) => (
-          <Text key={i} style={styles.infoText}>{med.name} {med.dosage} - {med.times.join(', ')}</Text>
-        ))}
-      </View>
-      <View style={styles.infoCard}>
-        <Text style={styles.infoTitle}>Reported Symptoms</Text>
-        {senior.symptoms.length === 0 ? (
-          <Text style={styles.infoText}>No symptoms reported.</Text>
-        ) : (
-          senior.symptoms.map((s, i) => (
-            <Text key={i} style={styles.infoText}>{s.name} - {s.severity} ({s.date} at {s.time})</Text>
-          ))
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#f8fcff' }}>
+      <ScrollView contentContainerStyle={styles.container}>
+        <Text style={styles.sectionTitle}>Senior Report</Text>
+        {selectedSenior && (
+          <Text style={styles.seniorLabel}>Viewing data for: <Text style={styles.seniorName}>{selectedSenior.name}</Text></Text>
         )}
-      </View>
-      <View style={styles.infoCard}>
-        <Text style={styles.infoTitle}>Medication History</Text>
-        {senior.medicationHistory.length === 0 ? (
-          <Text style={styles.infoText}>No medication history available.</Text>
-        ) : (
-          senior.medicationHistory.map((m, i) => (
-            <Text key={i} style={styles.infoText}>
-              {m.name} - {m.date} at {m.time}: {m.taken ? 'Taken' : 'Missed'}
-            </Text>
-          ))
-        )}
-      </View>
-      <TouchableOpacity style={styles.exportButton} onPress={() => alert('Export report functionality!')}>
-        <FontAwesome5 name="file-export" size={18} color="#fff" style={{ marginRight: 8 }} />
-        <Text style={styles.exportButtonText}>Export as PDF</Text>
-      </TouchableOpacity>
-    </ScrollView>
+        <View style={styles.infoCard}>
+          <Text style={styles.infoTitle}>Personal Information</Text>
+          <Text style={styles.infoText}>Name: {senior.name}</Text>
+          <Text style={styles.infoText}>Age: {senior.age}</Text>
+          <Text style={styles.infoText}>Identifier: {senior.identifier}</Text>
+        </View>
+        <View style={styles.infoCard}>
+          <Text style={styles.infoTitle}>Doctors</Text>
+          {senior.doctors.map((doc, i) => (
+            <Text key={i} style={styles.infoText}>{doc.name} ({doc.specialty})</Text>
+          ))}
+        </View>
+        <View style={styles.infoCard}>
+          <Text style={styles.infoTitle}>Current Treatment</Text>
+          {senior.prescriptions.map((med, i) => (
+            <Text key={i} style={styles.infoText}>{med.name} {med.dosage} - {med.times.join(', ')}</Text>
+          ))}
+        </View>
+        <View style={styles.infoCard}>
+          <Text style={styles.infoTitle}>Reported Symptoms</Text>
+          {senior.symptoms.length === 0 ? (
+            <Text style={styles.infoText}>No symptoms reported.</Text>
+          ) : (
+            senior.symptoms.map((s, i) => (
+              <Text key={i} style={styles.infoText}>{s.name} - {s.severity} ({s.date} at {s.time})</Text>
+            ))
+          )}
+        </View>
+        <View style={styles.infoCard}>
+          <Text style={styles.infoTitle}>Medication History</Text>
+          {senior.medicationHistory.length === 0 ? (
+            <Text style={styles.infoText}>No medication history available.</Text>
+          ) : (
+            senior.medicationHistory.map((m, i) => (
+              <Text key={i} style={styles.infoText}>
+                {m.name} - {m.date} at {m.time}: {m.taken ? 'Taken' : 'Missed'}
+              </Text>
+            ))
+          )}
+        </View>
+        <TouchableOpacity style={styles.exportButton} onPress={() => alert('Export report functionality!')}>
+          <FontAwesome5 name="file-export" size={18} color="#fff" style={{ marginRight: 8 }} />
+          <Text style={styles.exportButtonText}>Export as PDF</Text>
+        </TouchableOpacity>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
