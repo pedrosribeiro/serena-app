@@ -108,7 +108,7 @@ function AuthGateWrapper() {
   }
   if (!hasSenior) {
     if (showCreate) {
-      return <CreateSeniorScreen token={token} onSuccess={() => setHasSenior(true)} />;
+      return <CreateSeniorScreen token={token} onSuccess={() => setHasSenior(true)} onBack={() => setShowCreate(false)} />;
     }
     return <RelateSeniorScreen userId={user.id} token={token} onSuccess={() => setHasSenior(true)} onCreateSenior={() => setShowCreate(true)} />;
   }

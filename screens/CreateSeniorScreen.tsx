@@ -7,9 +7,10 @@ import { useSenior } from '../context/SeniorContext';
 interface CreateSeniorScreenProps {
   token: string;
   onSuccess: () => void;
+  onBack?: () => void;
 }
 
-export default function CreateSeniorScreen({ token, onSuccess }: CreateSeniorScreenProps) {
+export default function CreateSeniorScreen({ token, onSuccess, onBack }: CreateSeniorScreenProps) {
   const { user } = useAuth();
   const [name, setName] = useState('');
   const [birthDate, setBirthDate] = useState('');
@@ -103,7 +104,6 @@ export default function CreateSeniorScreen({ token, onSuccess }: CreateSeniorScr
           onChangeText={setDeviceId}
           editable={!loading}
         />
-        {error ? <Text style={styles.error}>{error}</Text> : null}
         <TouchableOpacity
           style={[styles.button, loading && styles.buttonDisabled]}
           onPress={handleCreate}
@@ -111,6 +111,14 @@ export default function CreateSeniorScreen({ token, onSuccess }: CreateSeniorScr
         >
           {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.buttonText}>Criar Senior</Text>}
         </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.secondaryButton}
+          onPress={onBack}
+          disabled={loading}
+        >
+          <Text style={styles.secondaryButtonText}>Voltar para seleção de Senior</Text>
+        </TouchableOpacity>
+        {error ? <Text style={styles.error}>{error}</Text> : null}
       </View>
     </View>
   );
@@ -182,6 +190,22 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 17,
+  },
+  secondaryButton: {
+    backgroundColor: '#f5f8ff',
+    borderRadius: 16,
+    width: '100%',
+    paddingVertical: 14,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#2bb3c0',
+    marginTop: 4,
+    marginBottom: 8,
+  },
+  secondaryButtonText: {
+    color: '#2bb3c0',
     fontWeight: 'bold',
     fontSize: 17,
   },

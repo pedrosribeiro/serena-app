@@ -17,6 +17,7 @@ export default function SeniorGate() {
   const router = useRouter();
 
   useEffect(() => {
+    setShowCreate(false); // Sempre reseta ao trocar de usuário
     const checkSenior = async () => {
       if (!user) return;
       setLoading(true);
@@ -54,7 +55,7 @@ export default function SeniorGate() {
 
   if (loading || !token || redirecting) return <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}><ActivityIndicator size="large" />;</View>;
   if (!user) return null;
-  // Sempre mostra a tela de relacionar-se a um senior primeiro
+  // Sempre mostra a tela de relacionar-se a um senior primeiro se não tiver senior
   if (!hasSenior) {
     return (
       <RelateSeniorScreen
@@ -65,8 +66,9 @@ export default function SeniorGate() {
       />
     );
   }
+  // Só mostra a tela de criar senior se o usuário explicitamente pediu
   if (showCreate) {
-    return <CreateSeniorScreen token={token} onSuccess={() => setHasSenior(true)} />;
+    return <CreateSeniorScreen token={token} onSuccess={() => setHasSenior(true)} onBack={() => setShowCreate(false)} />;
   }
   return null;
 }

@@ -1,13 +1,34 @@
-import { useState } from 'react';
-import { ScrollView, StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native';
+import { useRouter } from 'expo-router';
+import React, { useEffect, useState } from 'react';
+import { Modal, ScrollView, StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native';
 import { useAuth } from '../../context/AuthContext';
 import { useSenior } from '../../context/SeniorContext';
+import CreateSeniorScreen from '../../screens/CreateSeniorScreen';
+import RelateSeniorScreen from '../../screens/RelateSeniorScreen';
 
 export default function SettingsScreen() {
   const { user, logout } = useAuth();
   const { selectedSenior, setSelectedSenior, seniors } = useSenior();
   const [language, setLanguage] = useState('en');
   const [darkMode, setDarkMode] = useState(false);
+  const [showSeniorModal, setShowSeniorModal] = useState(false);
+  const [showCreate, setShowCreate] = useState(false);
+  const [token, setToken] = useState<string | null>(null);
+  const router = useRouter();
+
+  // Helper to get token if needed
+  useEffect(() => {
+    if (showSeniorModal && !token) {
+      import('../../api/auth').then(({ getToken }) => getToken().then(setToken));
+    }
+  }, [showSeniorModal, token]);
+
+  // When vinculação completes, close modal and go to home
+  const handleSeniorSuccess = () => {
+    setShowSeniorModal(false);
+    setShowCreate(false);
+    router.replace('/(tabs)');
+  };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -27,7 +48,8 @@ export default function SettingsScreen() {
               <Text style={[styles.seniorName, selectedSenior?.id === senior.id && styles.seniorButtonSelectedText]}>{senior.name} ({senior.age} yrs)</Text>
             </TouchableOpacity>
           ))
-        )}
+        )
+        }
       </View>
 
       <View style={styles.card}>
@@ -56,9 +78,33 @@ export default function SettingsScreen() {
         </View>
       </View>
 
+      <TouchableOpacity style={styles.card} onPress={() => setShowSeniorModal(true)}>
+        <Text style={styles.cardTitle}>Gerenciar Senior</Text>
+        <Text style={[styles.themeText, { marginTop: 4 }]}>Vincular-se ou criar um novo senior</Text>
+      </TouchableOpacity>
+
       <TouchableOpacity style={styles.logoutButton} onPress={logout}>
         <Text style={styles.logoutButtonText}>Logout</Text>
       </TouchableOpacity>
+
+      <Modal visible={showSeniorModal} animationType="slide" onRequestClose={() => setShowSeniorModal(false)}>
+        <View style={{ flex: 1, backgroundColor: '#f8fcff' }}>
+          {token && !showCreate && user && (
+            <RelateSeniorScreen
+              userId={user.id}
+              token={token}
+              onSuccess={handleSeniorSuccess}
+              onCreateSenior={() => setShowCreate(true)}
+            />
+          )}
+          {token && showCreate && (
+            <CreateSeniorScreen token={token} onSuccess={handleSeniorSuccess} onBack={() => setShowCreate(false)} />
+          )}
+          <TouchableOpacity style={{ margin: 24, alignSelf: 'center' }} onPress={() => setShowSeniorModal(false)}>
+            <Text style={{ color: '#e74c3c', fontSize: 16, fontWeight: 'bold' }}>Cancelar</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
     </ScrollView>
   );
 }
