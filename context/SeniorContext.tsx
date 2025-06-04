@@ -10,9 +10,10 @@ interface Senior {
 
 interface SeniorContextType {
   selectedSenior: Senior | null;
-  setSelectedSenior: (senior: Senior) => void;
+  setSelectedSenior: (senior: Senior | null) => void;
   seniors: Senior[];
   setSeniors: (seniors: Senior[]) => void;
+  resetState: () => void;
 }
 
 const SeniorContext = createContext<SeniorContextType | undefined>(undefined);
@@ -20,8 +21,14 @@ const SeniorContext = createContext<SeniorContextType | undefined>(undefined);
 export const SeniorProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [selectedSenior, setSelectedSenior] = useState<Senior | null>(null);
   const [seniors, setSeniors] = useState<Senior[]>([]);
+
+  const resetState = () => {
+    setSelectedSenior(null);
+    setSeniors([]);
+  };
+
   return (
-    <SeniorContext.Provider value={{ selectedSenior, setSelectedSenior, seniors, setSeniors }}>
+    <SeniorContext.Provider value={{ selectedSenior, setSelectedSenior, seniors, setSeniors, resetState }}>
       {children}
     </SeniorContext.Provider>
   );

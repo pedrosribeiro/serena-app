@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ActivityIndicator, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { API_BASE_URL } from '../constants/api';
+import { useSenior } from '../context/SeniorContext';
 
 interface RelateSeniorScreenProps {
   userId: string;
@@ -13,6 +14,34 @@ export default function RelateSeniorScreen({ userId, token, onSuccess, onCreateS
   const [seniorId, setSeniorId] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const { setSeniors, setSelectedSenior } = useSenior();
+
+  const fetchAndSetSeniors = async () => {
+    try {
+      const res = await fetch(`${API_BASE_URL}/senior/by_user/${userId}`, {
+        headers: {
+          'accept': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data) && data.length > 0) {
+          const seniorsWithAge = data.map((senior: any) => {
+            const [day, month, year] = senior.birth_date.split('/').map(Number);
+            const birth = new Date(year, month - 1, day);
+            const today = new Date();
+            let age = today.getFullYear() - birth.getFullYear();
+            const m = today.getMonth() - birth.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
+            return { ...senior, age };
+          });
+          setSeniors(seniorsWithAge);
+          setSelectedSenior(seniorsWithAge[0]);
+        }
+      }
+    } catch {}
+  };
 
   const handleRelate = async () => {
     setError('');
@@ -30,6 +59,7 @@ export default function RelateSeniorScreen({ userId, token, onSuccess, onCreateS
         },
       });
       if (res.ok) {
+        await fetchAndSetSeniors();
         onSuccess();
       } else {
         const data = await res.json();

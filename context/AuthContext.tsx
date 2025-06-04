@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 import { getToken, removeToken } from '../api/auth';
+import { useSenior } from './SeniorContext';
 
 // Tipos de usuário e paciente
 export type UserRole = 'caregiver' | 'doctor';
@@ -34,6 +35,25 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [patients, setPatients] = useState<Patient[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // Função para resetar todo o estado do AuthContext
+  const resetState = () => {
+    setUser(null);
+    setSelectedPatient(null);
+    setPatients([]);
+  };
+
+  // Função robusta de logout
+  const logout = async () => {
+    resetState();
+    // Limpa também o contexto de seniors, se disponível
+    try {
+      const seniorCtx = useSenior();
+      seniorCtx.resetState();
+    } catch {}
+    await removeToken();
+    await AsyncStorage.removeItem('user');
+  };
+
   // Load user and token from storage on mount, and validate token
   useEffect(() => {
     (async () => {
@@ -48,13 +68,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setLoading(false);
     })();
   }, []);
-
-  // Função robusta de logout
-  const logout = async () => {
-    setUser(null);
-    await removeToken();
-    await AsyncStorage.removeItem('user');
-  };
 
   return (
     <AuthContext.Provider value={{ user, setUser, selectedPatient, setSelectedPatient, patients, setPatients, logout, loading }}>

@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { ActivityIndicator, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { API_BASE_URL } from '../constants/api';
+import { useAuth } from '../context/AuthContext';
+import { useSenior } from '../context/SeniorContext';
 
 interface CreateSeniorScreenProps {
   token: string;
@@ -8,11 +10,41 @@ interface CreateSeniorScreenProps {
 }
 
 export default function CreateSeniorScreen({ token, onSuccess }: CreateSeniorScreenProps) {
+  const { user } = useAuth();
   const [name, setName] = useState('');
   const [birthDate, setBirthDate] = useState('');
   const [deviceId, setDeviceId] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const { setSeniors, setSelectedSenior } = useSenior();
+
+  const fetchAndSetSeniors = async () => {
+    if (!user) return;
+    try {
+      const res = await fetch(`${API_BASE_URL}/senior/by_user/${user.id}`, {
+        headers: {
+          'accept': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data) && data.length > 0) {
+          const seniorsWithAge = data.map((senior: any) => {
+            const [day, month, year] = senior.birth_date.split('/').map(Number);
+            const birth = new Date(year, month - 1, day);
+            const today = new Date();
+            let age = today.getFullYear() - birth.getFullYear();
+            const m = today.getMonth() - birth.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
+            return { ...senior, age };
+          });
+          setSeniors(seniorsWithAge);
+          setSelectedSenior(seniorsWithAge[0]);
+        }
+      }
+    } catch {}
+  };
 
   const handleCreate = async () => {
     setError('');
@@ -32,6 +64,7 @@ export default function CreateSeniorScreen({ token, onSuccess }: CreateSeniorScr
         body: JSON.stringify({ name, birth_date: birthDate, device_id: deviceId }),
       });
       if (res.ok) {
+        await fetchAndSetSeniors();
         onSuccess();
       } else {
         const data = await res.json();

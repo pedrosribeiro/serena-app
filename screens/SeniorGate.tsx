@@ -52,17 +52,21 @@ export default function SeniorGate() {
     }
   }, [hasSenior, redirecting, router]);
 
-  if (loading || !token || redirecting) return <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}><ActivityIndicator size="large" /></View>;
+  if (loading || !token || redirecting) return <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}><ActivityIndicator size="large" />;</View>;
   if (!user) return null;
+  // Sempre mostra a tela de relacionar-se a um senior primeiro
+  if (!hasSenior) {
+    return (
+      <RelateSeniorScreen
+        userId={user.id}
+        token={token}
+        onSuccess={() => setHasSenior(true)}
+        onCreateSenior={() => setShowCreate(true)}
+      />
+    );
+  }
   if (showCreate) {
     return <CreateSeniorScreen token={token} onSuccess={() => setHasSenior(true)} />;
   }
-  return (
-    <RelateSeniorScreen
-      userId={user.id}
-      token={token}
-      onSuccess={() => setHasSenior(true)}
-      onCreateSenior={() => setShowCreate(true)}
-    />
-  );
+  return null;
 }
