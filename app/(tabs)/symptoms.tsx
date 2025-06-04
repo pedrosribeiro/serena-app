@@ -1,4 +1,5 @@
 import { FontAwesome5 } from '@expo/vector-icons';
+import { useIsFocused } from '@react-navigation/native';
 import { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { getToken } from '../../api/auth';
@@ -12,6 +13,7 @@ export default function SymptomsScreen() {
   const [symptoms, setSymptoms] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const isFocused = useIsFocused();
 
   useEffect(() => {
     const fetchSymptoms = async () => {
@@ -42,7 +44,7 @@ export default function SymptomsScreen() {
       }
     };
     fetchSymptoms();
-  }, [selectedSenior]);
+  }, [selectedSenior, isFocused]);
 
   function formatDate(dateStr: string) {
     const date = new Date(dateStr);

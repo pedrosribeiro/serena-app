@@ -1,4 +1,5 @@
 import { FontAwesome5 } from '@expo/vector-icons';
+import { useIsFocused } from '@react-navigation/native';
 import { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { getToken } from '../../api/auth';
@@ -29,11 +30,12 @@ function formatDate(dateStr: string) {
 }
 
 export default function PrescriptionsScreen() {
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
   const { selectedSenior } = useSenior();
   const [prescriptions, setPrescriptions] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const isFocused = useIsFocused();
 
   useEffect(() => {
     const fetchPrescriptions = async () => {
@@ -64,7 +66,7 @@ export default function PrescriptionsScreen() {
       }
     };
     fetchPrescriptions();
-  }, [selectedSenior]);
+  }, [selectedSenior, isFocused]);
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -107,9 +109,11 @@ export default function PrescriptionsScreen() {
           </View>
         ))
       )}
-      <TouchableOpacity style={styles.editButton} onPress={() => alert('Prescription editing functionality!')}>
-        <Text style={styles.editButtonText}>Edit prescriptions</Text>
-      </TouchableOpacity>
+      {user?.role === 'doctor' && (
+        <TouchableOpacity style={styles.editButton} onPress={() => alert('Prescription editing functionality!')}>
+          <Text style={styles.editButtonText}>Edit prescriptions</Text>
+        </TouchableOpacity>
+      )}
     </ScrollView>
   );
 }
