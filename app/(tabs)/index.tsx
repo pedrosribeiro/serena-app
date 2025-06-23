@@ -30,18 +30,15 @@ export default function HomeScreen() {
         </View>
 
         {/* Atalhos Rápidos */}
-        <View style={styles.cardsRow}>
-          <TouchableOpacity style={styles.metricCard} onPress={() => alert('Tela de consultas ainda não implementada!')}>
-            <MaterialIcons name="medical-services" size={32} color="#2bb3c0" />
-            <Text style={styles.cardTitle}>Consultas</Text>
-            <Text style={styles.cardSub}>6 médicos</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.metricCard} onPress={() => navigation.navigate('Dispenser')}>
-            <MaterialIcons name="medication" size={32} color="#4ecb71" />
-            <Text style={styles.cardTitle}>Dispenser</Text>
-            <Text style={styles.cardSub}>Gerenciar medicamentos</Text>
-          </TouchableOpacity>
-        </View>
+        {user?.role !== 'doctor' && (
+          <View style={styles.cardsRow}>
+            <TouchableOpacity style={styles.metricCard} onPress={() => navigation.navigate('Dispenser')}>
+              <MaterialIcons name="medication" size={32} color="#4ecb71" />
+              <Text style={styles.cardTitle}>Dispenser</Text>
+              <Text style={styles.cardSub}>Gerenciar medicamentos</Text>
+            </TouchableOpacity>
+          </View>
+        )}
 
         {/* Atalhos Principais */}
         <Text style={styles.sectionTitle}>Atalhos</Text>

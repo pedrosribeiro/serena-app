@@ -33,6 +33,9 @@ export default function TabLayout() {
     { name: 'Settings', component: SettingsScreen, title: 'Configurações' },
   ];
   const doctorTabs = [
+    { name: 'Home', component: HomeScreen, title: 'Início' },
+    { name: 'Prescriptions', component: PrescriptionsScreen, title: 'Receitas' },
+    { name: 'Symptoms', component: SymptomsScreen, title: 'Sintomas' },
     { name: 'Reports', component: ReportsScreen, title: 'Relatórios' },
     { name: 'Settings', component: SettingsScreen, title: 'Configurações' },
   ];
