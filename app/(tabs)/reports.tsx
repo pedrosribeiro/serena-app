@@ -34,53 +34,53 @@ export default function ReportsScreen() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#f8fcff' }}>
       <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.sectionTitle}>Senior Report</Text>
+        <Text style={styles.sectionTitle}>Relatório do Idoso</Text>
         {selectedSenior && (
-          <Text style={styles.seniorLabel}>Viewing data for: <Text style={styles.seniorName}>{selectedSenior.name}</Text></Text>
+          <Text style={styles.seniorLabel}>Visualizando dados de: <Text style={styles.seniorName}>{selectedSenior.name}</Text></Text>
         )}
         <View style={styles.infoCard}>
-          <Text style={styles.infoTitle}>Personal Information</Text>
-          <Text style={styles.infoText}>Name: {senior.name}</Text>
-          <Text style={styles.infoText}>Age: {senior.age}</Text>
-          <Text style={styles.infoText}>Identifier: {senior.identifier}</Text>
+          <Text style={styles.infoTitle}>Informações Pessoais</Text>
+          <Text style={styles.infoText}>Nome: {senior.name}</Text>
+          <Text style={styles.infoText}>Idade: {senior.age}</Text>
+          <Text style={styles.infoText}>Identificador: {senior.identifier}</Text>
         </View>
         <View style={styles.infoCard}>
-          <Text style={styles.infoTitle}>Doctors</Text>
+          <Text style={styles.infoTitle}>Médicos</Text>
           {senior.doctors.map((doc, i) => (
             <Text key={i} style={styles.infoText}>{doc.name} ({doc.specialty})</Text>
           ))}
         </View>
         <View style={styles.infoCard}>
-          <Text style={styles.infoTitle}>Current Treatment</Text>
+          <Text style={styles.infoTitle}>Tratamento Atual</Text>
           {senior.prescriptions.map((med, i) => (
             <Text key={i} style={styles.infoText}>{med.name} {med.dosage} - {med.times.join(', ')}</Text>
           ))}
         </View>
         <View style={styles.infoCard}>
-          <Text style={styles.infoTitle}>Reported Symptoms</Text>
+          <Text style={styles.infoTitle}>Sintomas Reportados</Text>
           {senior.symptoms.length === 0 ? (
-            <Text style={styles.infoText}>No symptoms reported.</Text>
+            <Text style={styles.infoText}>Nenhum sintoma reportado.</Text>
           ) : (
             senior.symptoms.map((s, i) => (
-              <Text key={i} style={styles.infoText}>{s.name} - {s.severity} ({s.date} at {s.time})</Text>
+              <Text key={i} style={styles.infoText}>{s.name} - {s.severity} ({s.date} às {s.time})</Text>
             ))
           )}
         </View>
         <View style={styles.infoCard}>
-          <Text style={styles.infoTitle}>Medication History</Text>
+          <Text style={styles.infoTitle}>Histórico de Medicação</Text>
           {senior.medicationHistory.length === 0 ? (
-            <Text style={styles.infoText}>No medication history available.</Text>
+            <Text style={styles.infoText}>Nenhum histórico de medicação disponível.</Text>
           ) : (
             senior.medicationHistory.map((m, i) => (
               <Text key={i} style={styles.infoText}>
-                {m.name} - {m.date} at {m.time}: {m.taken ? 'Taken' : 'Missed'}
+                {m.name} - {m.date} às {m.time}: {m.taken ? 'Tomado' : 'Perdido'}
               </Text>
             ))
           )}
         </View>
-        <TouchableOpacity style={styles.exportButton} onPress={() => alert('Export report functionality!')}>
+        <TouchableOpacity style={styles.exportButton} onPress={() => alert('Funcionalidade de exportação de relatório!')}>
           <FontAwesome5 name="file-export" size={18} color="#fff" style={{ marginRight: 8 }} />
-          <Text style={styles.exportButtonText}>Export as PDF</Text>
+          <Text style={styles.exportButtonText}>Exportar como PDF</Text>
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>

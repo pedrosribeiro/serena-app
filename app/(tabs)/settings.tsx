@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { Modal, ScrollView, StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native';
+import { Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '../../context/AuthContext';
 import { useSenior } from '../../context/SeniorContext';
@@ -10,7 +10,6 @@ import RelateSeniorScreen from '../../screens/RelateSeniorScreen';
 export default function SettingsScreen() {
   const { user, logout } = useAuth();
   const { selectedSenior, setSelectedSenior, seniors } = useSenior();
-  const [language, setLanguage] = useState('en');
   const [darkMode, setDarkMode] = useState(false);
   const [showSeniorModal, setShowSeniorModal] = useState(false);
   const [showCreate, setShowCreate] = useState(false);
@@ -34,12 +33,12 @@ export default function SettingsScreen() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#f8fcff' }}>
       <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.sectionTitle}>Settings</Text>
+        <Text style={styles.sectionTitle}>Configurações</Text>
 
         <View style={styles.card}>
-          <Text style={styles.cardTitle}>Select Senior</Text>
+          <Text style={styles.cardTitle}>Selecionar Idoso</Text>
           {seniors.length === 0 ? (
-            <Text>No seniors found.</Text>
+            <Text>Nenhum idoso encontrado.</Text>
           ) : (
             seniors.map((senior) => (
               <TouchableOpacity
@@ -47,46 +46,19 @@ export default function SettingsScreen() {
                 style={[styles.seniorButton, selectedSenior?.id === senior.id && styles.seniorButtonSelected]}
                 onPress={() => setSelectedSenior(senior)}
               >
-                <Text style={[styles.seniorName, selectedSenior?.id === senior.id && styles.seniorButtonSelectedText]}>{senior.name} ({senior.age} yrs)</Text>
+                <Text style={[styles.seniorName, selectedSenior?.id === senior.id && styles.seniorButtonSelectedText]}>{senior.name} ({senior.age} anos)</Text>
               </TouchableOpacity>
             ))
-          )
-          }
-        </View>
-
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Language</Text>
-          <View style={styles.row}>
-            <TouchableOpacity
-              style={[styles.langButton, language === 'en' && styles.langButtonSelected]}
-              onPress={() => setLanguage('en')}
-            >
-              <Text style={[styles.langText, language === 'en' && styles.langButtonSelectedText]}>English</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.langButton, language === 'pt' && styles.langButtonSelected]}
-              onPress={() => setLanguage('pt')}
-            >
-              <Text style={[styles.langText, language === 'pt' && styles.langButtonSelectedText]}>Português</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Theme</Text>
-          <View style={styles.row}>
-            <Text style={styles.themeText}>{darkMode ? 'Dark' : 'Light'} mode</Text>
-            <Switch value={darkMode} onValueChange={setDarkMode} />
-          </View>
+          )}
         </View>
 
         <TouchableOpacity style={styles.card} onPress={() => setShowSeniorModal(true)}>
-          <Text style={styles.cardTitle}>Gerenciar Senior</Text>
-          <Text style={[styles.themeText, { marginTop: 4 }]}>Vincular-se ou criar um novo senior</Text>
+          <Text style={styles.cardTitle}>Gerenciar Idoso</Text>
+          <Text style={[styles.themeText, { marginTop: 4 }]}>Vincular-se ou criar um novo idoso</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.logoutButton} onPress={logout}>
-          <Text style={styles.logoutButtonText}>Logout</Text>
+          <Text style={styles.logoutButtonText}>Sair</Text>
         </TouchableOpacity>
 
         <Modal visible={showSeniorModal} animationType="slide" onRequestClose={() => setShowSeniorModal(false)}>

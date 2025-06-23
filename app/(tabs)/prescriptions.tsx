@@ -72,16 +72,16 @@ export default function PrescriptionsScreen() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#f8fcff' }}>
       <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.sectionTitle}>Prescriptions for the Senior</Text>
+        <Text style={styles.sectionTitle}>Prescrições do Idoso</Text>
         {selectedSenior && (
-          <Text style={styles.seniorLabel}>Viewing data for: <Text style={styles.seniorName}>{selectedSenior.name}</Text></Text>
+          <Text style={styles.seniorLabel}>Visualizando dados de: <Text style={styles.seniorName}>{selectedSenior.name}</Text></Text>
         )}
         {loading ? (
           <Text style={styles.emptyText}>Carregando prescrições...</Text>
         ) : error ? (
           <Text style={styles.emptyText}>{error}</Text>
         ) : prescriptions.length === 0 ? (
-          <Text style={styles.emptyText}>Nenhuma prescrição registrada para este senior.</Text>
+          <Text style={styles.emptyText}>Nenhuma prescrição registrada para este idoso.</Text>
         ) : (
           prescriptions.map((med) => (
             <View key={med.id} style={styles.prescriptionCard}>
@@ -112,8 +112,8 @@ export default function PrescriptionsScreen() {
           ))
         )}
         {user?.role === 'doctor' && (
-          <TouchableOpacity style={styles.editButton} onPress={() => alert('Prescription editing functionality!')}>
-            <Text style={styles.editButtonText}>Edit prescriptions</Text>
+          <TouchableOpacity style={styles.editButton} onPress={() => alert('Funcionalidade de edição de prescrições!')}>
+            <Text style={styles.editButtonText}>Editar prescrições</Text>
           </TouchableOpacity>
         )}
       </ScrollView>

@@ -21,48 +21,48 @@ export default function HomeScreen() {
             <Image source={require('../../assets/images/user.png')} style={styles.avatarImg} />
           </View>
           <View style={{ flex: 1 }}>
-            <Text style={styles.hello}>Hi,</Text>
-            <Text style={styles.username}>{user?.name || 'User'} 👋</Text>
+            <Text style={styles.hello}>Olá,</Text>
+            <Text style={styles.username}>{user?.name || 'Usuário'} 👋</Text>
             {selectedSenior && (
-              <Text style={styles.seniorLabel}>Managing: <Text style={styles.seniorName}>{selectedSenior.name}</Text></Text>
+              <Text style={styles.seniorLabel}>Gerenciando: <Text style={styles.seniorName}>{selectedSenior.name}</Text></Text>
             )}
           </View>
         </View>
 
-        {/* Top Shortcuts */}
+        {/* Atalhos Rápidos */}
         <View style={styles.cardsRow}>
-          <TouchableOpacity style={styles.metricCard} onPress={() => alert('Appointments screen not implemented yet!')}>
+          <TouchableOpacity style={styles.metricCard} onPress={() => alert('Tela de consultas ainda não implementada!')}>
             <MaterialIcons name="medical-services" size={32} color="#2bb3c0" />
-            <Text style={styles.cardTitle}>Appointments</Text>
-            <Text style={styles.cardSub}>6 doctors</Text>
+            <Text style={styles.cardTitle}>Consultas</Text>
+            <Text style={styles.cardSub}>6 médicos</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.metricCard} onPress={() => navigation.navigate('Dispenser')}>
             <MaterialIcons name="medication" size={32} color="#4ecb71" />
             <Text style={styles.cardTitle}>Dispenser</Text>
-            <Text style={styles.cardSub}>Manage medications</Text>
+            <Text style={styles.cardSub}>Gerenciar medicamentos</Text>
           </TouchableOpacity>
         </View>
 
-        {/* Main Shortcuts */}
-        <Text style={styles.sectionTitle}>Shortcuts</Text>
+        {/* Atalhos Principais */}
+        <Text style={styles.sectionTitle}>Atalhos</Text>
         <View style={styles.cardsRow}>
           <TouchableOpacity style={styles.metricCard} onPress={() => navigation.navigate('Prescriptions')}>
             <FontAwesome5 name="pills" size={32} color="#2bb3c0" />
-            <Text style={styles.cardTitle}>Prescriptions</Text>
+            <Text style={styles.cardTitle}>Receitas</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.metricCard} onPress={() => navigation.navigate('Symptoms')}>
             <MaterialIcons name="sick" size={32} color="#e74c3c" />
-            <Text style={styles.cardTitle}>Symptoms</Text>
+            <Text style={styles.cardTitle}>Sintomas</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.cardsRow}>
           <TouchableOpacity style={styles.metricCard} onPress={() => navigation.navigate('Reports')}>
             <Ionicons name="document-text-outline" size={32} color="#2bb3c0" />
-            <Text style={styles.cardTitle}>Reports</Text>
+            <Text style={styles.cardTitle}>Relatórios</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.metricCard} onPress={() => navigation.navigate('Settings')}>
             <Ionicons name="settings-outline" size={32} color="#4ecb71" />
-            <Text style={styles.cardTitle}>Settings</Text>
+            <Text style={styles.cardTitle}>Configurações</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>

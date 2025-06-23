@@ -163,10 +163,10 @@ export default function DispenserScreen() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#f8fcff' }}>
       <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.sectionTitle}>Dispenser Management</Text>
-        <Text style={styles.sectionDesc}>Tap a slot in the circle to edit its medication.</Text>
+        <Text style={styles.sectionTitle}>Gerenciamento do Dispenser</Text>
+        <Text style={styles.sectionDesc}>Toque em um compartimento no círculo para editar seu medicamento.</Text>
         {selectedSenior && (
-          <Text style={styles.seniorLabel}>Viewing data for: <Text style={styles.seniorName}>{selectedSenior.name}</Text></Text>
+          <Text style={styles.seniorLabel}>Visualizando dados de: <Text style={styles.seniorName}>{selectedSenior.name}</Text></Text>
         )}
         {error ? <Text style={{ color: 'red', marginBottom: 10 }}>{error}</Text> : null}
         {loading ? (
@@ -199,7 +199,7 @@ export default function DispenserScreen() {
         </View>
         {editingSlot && (
           <View style={styles.editCard}>
-            <Text style={styles.editTitle}>Edit Slot</Text>
+            <Text style={styles.editTitle}>Editar Compartimento</Text>
             {medicationsLoading ? (
               <Text style={{ color: '#888', marginBottom: 8 }}>Carregando medicamentos...</Text>
             ) : medicationsError ? (
@@ -222,17 +222,17 @@ export default function DispenserScreen() {
             )}
             <TextInput
               style={styles.input}
-              placeholder="Quantity"
+              placeholder="Quantidade"
               value={newQty}
               onChangeText={setNewQty}
               keyboardType="numeric"
               editable={!loading}
             />
             <TouchableOpacity style={styles.saveButton} onPress={() => handleSave(editingSlot)} disabled={loading || medicationsLoading}>
-              <Text style={styles.saveButtonText}>{loading ? 'Saving...' : 'Save'}</Text>
+              <Text style={styles.saveButtonText}>{loading ? 'Salvando...' : 'Salvar'}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.cancelButton} onPress={() => setEditingSlot(null)} disabled={loading}>
-              <Text style={styles.cancelButtonText}>Cancel</Text>
+              <Text style={styles.cancelButtonText}>Cancelar</Text>
             </TouchableOpacity>
           </View>
         )}
@@ -262,6 +262,7 @@ const styles = StyleSheet.create({
     color: '#888',
     marginBottom: 9,
     fontFamily: 'Montserrat-Regular',
+    textAlign: 'center',
   },
   circleContainer: {
     alignItems: 'center',

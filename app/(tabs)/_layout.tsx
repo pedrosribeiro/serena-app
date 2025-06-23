@@ -25,16 +25,16 @@ export default function TabLayout() {
   const isSmallScreen = width < 375;
 
   const caregiverTabs = [
-    { name: 'Home', component: HomeScreen, title: 'Home' },
-    { name: 'Prescriptions', component: PrescriptionsScreen, title: 'Prescriptions' },
-    { name: 'Symptoms', component: SymptomsScreen, title: 'Symptoms' },
-    { name: 'Reports', component: ReportsScreen, title: 'Reports' },
+    { name: 'Home', component: HomeScreen, title: 'Início' },
+    { name: 'Prescriptions', component: PrescriptionsScreen, title: 'Receitas' },
+    { name: 'Symptoms', component: SymptomsScreen, title: 'Sintomas' },
+    { name: 'Reports', component: ReportsScreen, title: 'Relatórios' },
     { name: 'Dispenser', component: DispenserScreen, title: 'Dispenser' },
-    { name: 'Settings', component: SettingsScreen, title: 'Settings' },
+    { name: 'Settings', component: SettingsScreen, title: 'Configurações' },
   ];
   const doctorTabs = [
-    { name: 'Reports', component: ReportsScreen, title: 'Reports' },
-    { name: 'Settings', component: SettingsScreen, title: 'Settings' },
+    { name: 'Reports', component: ReportsScreen, title: 'Relatórios' },
+    { name: 'Settings', component: SettingsScreen, title: 'Configurações' },
   ];
   const tabs = user?.role === 'doctor' ? doctorTabs : caregiverTabs;
 
@@ -96,7 +96,8 @@ export default function TabLayout() {
             numberOfLines={1}
             ellipsizeMode="tail"
           >
-            {route.name}
+            {/* Mostra o título traduzido da aba */}
+            {tabs.find(t => t.name === route.name)?.title || route.name}
           </Text>
         ),
       })}

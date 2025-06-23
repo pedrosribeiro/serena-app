@@ -61,16 +61,16 @@ export default function SymptomsScreen() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#f8fcff' }}>
       <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.sectionTitle}>Reported Symptoms</Text>
+        <Text style={styles.sectionTitle}>Sintomas Reportados</Text>
         {selectedSenior && (
-          <Text style={styles.seniorLabel}>Viewing data for: <Text style={styles.seniorName}>{selectedSenior.name}</Text></Text>
+          <Text style={styles.seniorLabel}>Visualizando dados de: <Text style={styles.seniorName}>{selectedSenior.name}</Text></Text>
         )}
         {loading ? (
           <Text style={styles.emptyText}>Carregando sintomas...</Text>
         ) : error ? (
           <Text style={styles.emptyText}>{error}</Text>
         ) : symptoms.length === 0 ? (
-          <Text style={styles.emptyText}>Nenhum sintoma registrado para este senior.</Text>
+          <Text style={styles.emptyText}>Nenhum sintoma registrado para este idoso.</Text>
         ) : (
           symptoms.map((symptom) => (
             <View key={symptom.id} style={styles.symptomCard}>

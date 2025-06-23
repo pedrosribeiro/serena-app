@@ -5,8 +5,8 @@ import { useAuth, UserRole } from '../context/AuthContext';
 import { useSenior } from '../context/SeniorContext';
 
 const roles: { label: string; value: UserRole }[] = [
-  { label: 'Caregiver', value: 'caregiver' },
-  { label: 'Doctor', value: 'doctor' },
+  { label: 'Cuidador', value: 'caregiver' },
+  { label: 'Médico', value: 'doctor' },
 ];
 
 export default function AuthForm() {
@@ -69,7 +69,7 @@ export default function AuthForm() {
       return;
     }
     if (!email || !password || (isSignUp && !name)) {
-      setError('Fill in all fields');
+      setError('Preencha todos os campos');
       return;
     }
     setLoading(true);
@@ -114,7 +114,7 @@ export default function AuthForm() {
       if (isSignUp && (err.message?.toLowerCase().includes('email already registered'))) {
         setError('Este e-mail já está cadastrado. Faça login ou use outro e-mail.');
       } else {
-        setError((err as any).message || 'Authentication failed');
+        setError((err as any).message || 'Falha na autenticação');
       }
     } finally {
       setLoading(false);
@@ -136,10 +136,10 @@ export default function AuthForm() {
           />
         </View>
         <View style={styles.card}>
-          <Text style={styles.title}>{isSignUp ? 'Create account' : 'Login'}</Text>
+          <Text style={styles.title}>{isSignUp ? 'Criar conta' : 'Entrar'}</Text>
           {isSignUp && (
             <TextInput
-              placeholder="Name"
+              placeholder="Nome"
               value={name}
               onChangeText={setName}
               style={styles.input}
@@ -147,7 +147,7 @@ export default function AuthForm() {
             />
           )}
           <TextInput
-            placeholder="Email"
+            placeholder="E-mail"
             value={email}
             onChangeText={setEmail}
             style={styles.input}
@@ -156,17 +156,12 @@ export default function AuthForm() {
           />
           <View style={{ width: '100%' }}>
             <TextInput
-              placeholder="Password"
+              placeholder="Senha"
               value={password}
               onChangeText={setPassword}
               style={styles.input}
               secureTextEntry
             />
-            {!isSignUp && (
-              <TouchableOpacity style={styles.forgotBtn}>
-                <Text style={styles.forgotText}>Forgot password?</Text>
-              </TouchableOpacity>
-            )}
           </View>
           {/* Botões de seleção de role só aparecem no sign up */}
           {isSignUp && (
@@ -184,12 +179,12 @@ export default function AuthForm() {
           )}
           {error ? <Text style={styles.error}>{error}</Text> : null}
           <TouchableOpacity style={styles.loginBtn} onPress={handleSubmit} disabled={loading}>
-            <Text style={styles.loginBtnText}>{loading ? 'Aguarde...' : isSignUp ? 'Sign up' : 'Log in'}</Text>
+            <Text style={styles.loginBtnText}>{loading ? 'Aguarde...' : isSignUp ? 'Cadastrar' : 'Entrar'}</Text>
           </TouchableOpacity>
           <View style={styles.bottomRow}>
-            <Text style={{ color: '#888' }}>{isSignUp ? 'Already have an account?' : "Don't have an account?"} </Text>
+            <Text style={{ color: '#888' }}>{isSignUp ? 'Já tem uma conta?' : 'Não tem uma conta?'} </Text>
             <TouchableOpacity onPress={() => setIsSignUp((v) => !v)}>
-              <Text style={styles.linkText}>{isSignUp ? 'Log in' : 'Create an account'}</Text>
+              <Text style={styles.linkText}>{isSignUp ? 'Entrar' : 'Criar conta'}</Text>
             </TouchableOpacity>
           </View>
         </View>
