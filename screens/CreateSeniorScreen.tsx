@@ -15,6 +15,7 @@ export default function CreateSeniorScreen({ token, onSuccess, onBack }: CreateS
   const [name, setName] = useState('');
   const [birthDate, setBirthDate] = useState('');
   const [deviceId, setDeviceId] = useState('');
+  const [id, setId] = useState(''); // Novo campo para CPF
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const { setSeniors, setSelectedSenior } = useSenior();
@@ -49,7 +50,7 @@ export default function CreateSeniorScreen({ token, onSuccess, onBack }: CreateS
 
   const handleCreate = async () => {
     setError('');
-    if (!name || !birthDate || !deviceId) {
+    if (!name || !birthDate || !deviceId || !id) {
       setError('Preencha todos os campos.');
       return;
     }
@@ -62,14 +63,31 @@ export default function CreateSeniorScreen({ token, onSuccess, onBack }: CreateS
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ name, birth_date: birthDate, device_id: deviceId }),
+        body: JSON.stringify({ id, name, birth_date: birthDate, device_id: deviceId }), // Inclui o id (CPF)
       });
       if (res.ok) {
         await fetchAndSetSeniors();
         onSuccess();
       } else {
-        const data = await res.json();
-        setError(data.detail || 'Erro ao criar senior.');
+        let data;
+        try {
+          data = await res.json();
+        } catch {
+          setError('Erro ao criar senior.');
+          return;
+        }
+        // Trata erro de CPF inválido vindo do backend
+        if (data?.detail) {
+          if (Array.isArray(data.detail) && data.detail[0]?.msg) {
+            setError(data.detail[0].msg);
+          } else if (typeof data.detail === 'string') {
+            setError(data.detail);
+          } else {
+            setError('Erro ao criar senior.');
+          }
+        } else {
+          setError('Erro ao criar senior.');
+        }
       }
     } catch (e) {
       setError('Erro de conexão.');
@@ -103,6 +121,15 @@ export default function CreateSeniorScreen({ token, onSuccess, onBack }: CreateS
           value={deviceId}
           onChangeText={setDeviceId}
           editable={!loading}
+        />
+        <TextInput
+          style={[styles.input, loading && styles.inputDisabled]}
+          placeholder="CPF (somente números)"
+          value={id}
+          onChangeText={setId}
+          editable={!loading}
+          maxLength={11}
+          keyboardType="numeric"
         />
         <TouchableOpacity
           style={[styles.button, loading && styles.buttonDisabled]}
