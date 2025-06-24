@@ -58,37 +58,45 @@ export default function ReportsScreen() {
         <head>
           <meta charset="utf-8" />
           <style>
-            body { font-family: Arial, sans-serif; padding: 24px; color: #222; }
-            h1 { color: #2bb3c0; font-size: 24px; margin-bottom: 12px; }
-            h2 { color: #457B9D; font-size: 18px; margin-top: 24px; margin-bottom: 8px; }
-            .section { margin-bottom: 18px; }
-            .label { font-weight: bold; }
-            .footer { margin-top: 32px; font-size: 12px; color: #888; text-align: right; }
+        body { font-family: Arial, sans-serif; padding: 24px; color: #222; }
+        h1 { color: #2bb3c0; font-size: 24px; margin-bottom: 12px; }
+        h2 { color: #457B9D; font-size: 18px; margin-top: 24px; margin-bottom: 8px; }
+        .section { margin-bottom: 18px; }
+        .label { font-weight: bold; }
+        .footer { margin-top: 32px; font-size: 12px; color: #888; text-align: right; }
           </style>
         </head>
         <body>
           <h1>Relatório do Idoso</h1>
           <div class="section">
-            <h2>Informações Pessoais</h2>
-            <div><span class="label">Nome:</span> ${senior.name}</div>
-            <div><span class="label">Idade:</span> ${senior.age}</div>
-            <div><span class="label">Identificador:</span> ${senior.identifier}</div>
+        <h2>Informações Pessoais</h2>
+        <div><span class="label">Nome:</span> ${senior.name}</div>
+        <div><span class="label">Idade:</span> ${senior.age}</div>
+        <div><span class="label">Identificador:</span> ${senior.identifier}</div>
           </div>
           <div class="section">
-            <h2>Médicos</h2>
-            ${senior.doctors.map((doc: any) => `<div>${doc.name} (${doc.specialty})</div>`).join('')}
+        <h2>Médicos</h2>
+        ${senior.doctors && Array.isArray(senior.doctors) && senior.doctors.length > 0
+          ? senior.doctors.map((doc: any) => `<div>${doc.name} (${doc.specialty})</div>`).join('')
+          : '<div>Nenhum médico cadastrado.</div>'}
           </div>
           <div class="section">
-            <h2>Tratamento Atual</h2>
-            ${senior.prescriptions.map((med: any) => `<div>${med.name} ${med.dosage} - ${med.times.join(', ')}</div>`).join('')}
+        <h2>Tratamento Atual</h2>
+        ${senior.prescriptions && Array.isArray(senior.prescriptions) && senior.prescriptions.length > 0
+          ? senior.prescriptions.map((med: any) => `<div>${med.name} ${med.dosage || ''} - a cada ${med.frequency}h</div>`).join('')
+          : '<div>Nenhum tratamento cadastrado.</div>'}
           </div>
           <div class="section">
-            <h2>Sintomas Reportados</h2>
-            ${senior.symptoms.length === 0 ? '<div>Nenhum sintoma reportado.</div>' : senior.symptoms.map((s: any) => `<div>${s.name} - ${s.severity} (${s.date} às ${s.time})</div>`).join('')}
+        <h2>Sintomas Reportados</h2>
+        ${senior.symptoms && Array.isArray(senior.symptoms) && senior.symptoms.length > 0
+          ? senior.symptoms.map((s: any) => `<div>${s.name} - ${s.severity} (${s.date} às ${s.time})</div>`).join('')
+          : '<div>Nenhum sintoma reportado.</div>'}
           </div>
           <div class="section">
-            <h2>Histórico de Medicação</h2>
-            ${senior.medicationHistory.length === 0 ? '<div>Nenhum histórico de medicação disponível.</div>' : senior.medicationHistory.map((m: any) => `<div>${m.name} - ${m.date} às ${m.time}: ${m.taken ? 'Tomado' : 'Perdido'}</div>`).join('')}
+        <h2>Histórico de Medicação</h2>
+        ${senior.medicationHistory && Array.isArray(senior.medicationHistory) && senior.medicationHistory.length > 0
+          ? senior.medicationHistory.map((m: any) => `<div>${m.name} - ${m.date} às ${m.time}: ${m.taken ? 'Tomado' : 'Perdido'}</div>`).join('')
+          : '<div>Nenhum histórico de medicação disponível.</div>'}
           </div>
           <div class="footer">Exportado em: ${dataHora}</div>
         </body>
@@ -122,37 +130,37 @@ export default function ReportsScreen() {
             </View>
             <View style={styles.infoCard}>
               <Text style={styles.infoTitle}>Médicos</Text>
-              {senior.doctors && senior.doctors.length === 0 ? (
+              {senior.doctors && Array.isArray(senior.doctors) && senior.doctors.length === 0 ? (
                 <Text style={styles.infoText}>Nenhum médico cadastrado.</Text>
               ) : null}
-              {senior.doctors && senior.doctors.length > 0 && senior.doctors.map((doc: any, i: number) => (
+              {senior.doctors && Array.isArray(senior.doctors) && senior.doctors.length > 0 && senior.doctors.map((doc: any, i: number) => (
                 <Text key={i} style={styles.infoText}>{doc.name} ({doc.specialty})</Text>
               ))}
             </View>
             <View style={styles.infoCard}>
               <Text style={styles.infoTitle}>Tratamento Atual</Text>
-              {senior.prescriptions && senior.prescriptions.length === 0 ? (
+              {senior.prescriptions && Array.isArray(senior.prescriptions) && senior.prescriptions.length === 0 ? (
                 <Text style={styles.infoText}>Nenhum tratamento cadastrado.</Text>
               ) : null}
-              {senior.prescriptions && senior.prescriptions.length > 0 && senior.prescriptions.map((med: any, i: number) => (
+              {senior.prescriptions && Array.isArray(senior.prescriptions) && senior.prescriptions.length > 0 && senior.prescriptions.map((med: any, i: number) => (
                 <Text key={i} style={styles.infoText}>{med.name} {med.dosage} - a cada {med.frequency}h</Text>
               ))}
             </View>
             <View style={styles.infoCard}>
               <Text style={styles.infoTitle}>Sintomas Reportados</Text>
-              {senior.symptoms && senior.symptoms.length === 0 ? (
+              {senior.symptoms && Array.isArray(senior.symptoms) && senior.symptoms.length === 0 ? (
                 <Text style={styles.infoText}>Nenhum sintoma reportado.</Text>
               ) : null}
-              {senior.symptoms && senior.symptoms.length > 0 && senior.symptoms.map((s: any, i: number) => (
+              {senior.symptoms && Array.isArray(senior.symptoms) && senior.symptoms.length > 0 && senior.symptoms.map((s: any, i: number) => (
                 <Text key={i} style={styles.infoText}>{s.name} - {s.severity} ({s.date} às {s.time})</Text>
               ))}
             </View>
             <View style={styles.infoCard}>
               <Text style={styles.infoTitle}>Histórico de Medicação</Text>
-              {senior.medicationHistory && senior.medicationHistory.length === 0 ? (
+              {senior.medicationHistory && Array.isArray(senior.medicationHistory) && senior.medicationHistory.length === 0 ? (
                 <Text style={styles.infoText}>Nenhum histórico de medicação disponível.</Text>
               ) : null}
-              {senior.medicationHistory && senior.medicationHistory.length > 0 && senior.medicationHistory.map((m: any, i: number) => (
+              {senior.medicationHistory && Array.isArray(senior.medicationHistory) && senior.medicationHistory.length > 0 && senior.medicationHistory.map((m: any, i: number) => (
                 <Text key={i} style={styles.infoText}>
                   {m.name} - {m.date} às {m.time}: {m.taken ? 'Tomado' : 'Perdido'}
                 </Text>

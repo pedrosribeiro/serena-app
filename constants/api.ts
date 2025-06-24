@@ -1,3 +1,1 @@
-import Constants from 'expo-constants';
-
-export const API_BASE_URL = Constants.expoConfig?.extra?.API_URL || 'http://localhost:8000';
+export const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:8000';
