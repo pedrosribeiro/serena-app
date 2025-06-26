@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react';
+import React, { createContext, ReactNode, useCallback, useContext, useEffect, useState } from 'react';
 import { getToken, removeToken } from '../api/auth';
 import { useSenior } from './SeniorContext';
 
@@ -43,7 +43,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   // Função robusta de logout
-  const logout = async () => {
+  const logout = useCallback(async () => {
     resetState();
     // Limpa também o contexto de seniors, se disponível
     try {
@@ -52,7 +52,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } catch {}
     await removeToken();
     await AsyncStorage.removeItem('user');
-  };
+  }, []);
 
   // Load user and token from storage on mount, and validate token
   useEffect(() => {

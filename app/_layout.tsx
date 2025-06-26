@@ -55,17 +55,23 @@ function AuthGateWrapper() {
   const [token, setToken] = useState<string | null>(null);
   const [showCreate, setShowCreate] = useState(false);
   const [error, setError] = useState('');
+  const [isRequestInProgress, setIsRequestInProgress] = useState(false);
 
   // Sempre verifica token antes de qualquer requisição protegida
   useEffect(() => {
     const fetchTokenAndSenior = async () => {
+      // Evita múltiplas chamadas simultâneas
+      if (isRequestInProgress || !user) return;
+      
+      setIsRequestInProgress(true);
       setError('');
-      if (!user) return;
       setSeniorLoading(true);
+      
       const t = await getToken();
       if (!t) {
         await logout();
         setSeniorLoading(false);
+        setIsRequestInProgress(false);
         return;
       }
       setToken(t);
@@ -79,6 +85,7 @@ function AuthGateWrapper() {
         if (res.status === 401) {
           await logout();
           setSeniorLoading(false);
+          setIsRequestInProgress(false);
           return;
         }
         if (res.ok) {
@@ -92,10 +99,12 @@ function AuthGateWrapper() {
         setHasSenior(false);
       } finally {
         setSeniorLoading(false);
+        setIsRequestInProgress(false);
       }
     };
-    if (user) fetchTokenAndSenior();
-  }, [user, logout]);
+    
+    fetchTokenAndSenior();
+  }, [user]); // Removido logout das dependências
 
   if (authLoading || seniorLoading) {
     return <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}><ActivityIndicator size="large" /></View>;
