@@ -73,3 +73,23 @@ npm run prisma:seed
 
 - [Expo documentation](https://docs.expo.dev/)
 - [Prisma documentation](https://www.prisma.io/docs/)
+
+
+## Build using EAS
+
+```bash
+npm install -g eas-cli
+```
+
+```bash
+eas login
+```
+
+```bash
+eas build:configure
+
+```
+```bash
+eas build -p android --profile preview
+```
+
